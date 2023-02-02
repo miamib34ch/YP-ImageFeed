@@ -38,13 +38,13 @@
                                                     </userDefinedRuntimeAttributes>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="27 августа 2022" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fD6-RS-Aaq" userLabel="dateCell">
-                                                    <rect key="frame" x="28.000000000000007" y="222.33333333333334" width="101.66666666666669" height="15.666666666666657"/>
+                                                    <rect key="frame" x="28.000000000000007" y="222" width="101.66666666666669" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2xu-Wp-eo5" userLabel="likeCell">
-                                                    <rect key="frame" x="333.66666666666669" y="12" width="29.333333333333314" height="26"/>
+                                                    <rect key="frame" x="334" y="12" width="29" height="26"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                     <state key="normal" image="Active"/>
@@ -93,12 +93,90 @@
             </objects>
             <point key="canvasLocation" x="46.564885496183201" y="-2.1126760563380285"/>
         </scene>
+        <!--ProfileView-->
+        <scene sceneID="jLX-8u-8ZZ">
+            <objects>
+                <viewController title="ProfileView" id="K6B-Vg-O6Y" customClass="ProfileViewController" customModule="YP_ImageFeed" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="S9s-JE-2oV">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mockUserPhoto" translatesAutoresizingMaskIntoConstraints="NO" id="uLI-Pd-kQe" userLabel="userPhoto">
+                                <rect key="frame" x="16" y="91" width="70" height="70"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="70" id="53x-Iw-dYj"/>
+                                    <constraint firstAttribute="width" constant="70" id="ynR-Ed-AyY"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Екатерина Новикова" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="POL-vx-VeL" userLabel="nameLabel">
+                                <rect key="frame" x="16" y="169" width="351" height="28"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="23"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="@ekaterina_nov" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LvZ-sn-JX2" userLabel="idLabel">
+                                <rect key="frame" x="16" y="205" width="351" height="16"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <color key="textColor" name="YPGray"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HUm-dz-OGP" userLabel="exitButton">
+                                <rect key="frame" x="347" y="115" width="20" height="22"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" image="Exit"/>
+                                <connections>
+                                    <action selector="tapExitButton:" destination="K6B-Vg-O6Y" eventType="touchUpInside" id="vDT-F7-GTy"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hello, world!" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vxn-7r-XsK" userLabel="statusLabel">
+                                <rect key="frame" x="16" y="229" width="351" height="16"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="S7d-y2-efR"/>
+                        <color key="backgroundColor" name="YPBlack"/>
+                        <constraints>
+                            <constraint firstItem="POL-vx-VeL" firstAttribute="top" secondItem="uLI-Pd-kQe" secondAttribute="bottom" constant="8" id="AzV-DZ-r1d"/>
+                            <constraint firstItem="S7d-y2-efR" firstAttribute="trailing" secondItem="Vxn-7r-XsK" secondAttribute="trailing" constant="26" id="Cj2-Ld-CQA"/>
+                            <constraint firstItem="uLI-Pd-kQe" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="HUm-dz-OGP" secondAttribute="leading" id="Dmk-HL-Rgl"/>
+                            <constraint firstItem="LvZ-sn-JX2" firstAttribute="top" secondItem="POL-vx-VeL" secondAttribute="bottom" constant="8" id="Mxa-HD-yCY"/>
+                            <constraint firstItem="uLI-Pd-kQe" firstAttribute="leading" secondItem="S7d-y2-efR" secondAttribute="leading" constant="16" id="Ow1-95-jjz"/>
+                            <constraint firstItem="S7d-y2-efR" firstAttribute="trailing" secondItem="HUm-dz-OGP" secondAttribute="trailing" constant="26" id="PT8-H1-36K"/>
+                            <constraint firstItem="S7d-y2-efR" firstAttribute="trailing" secondItem="LvZ-sn-JX2" secondAttribute="trailing" constant="26" id="SqK-K8-kkx"/>
+                            <constraint firstItem="HUm-dz-OGP" firstAttribute="top" secondItem="S7d-y2-efR" secondAttribute="top" constant="56" id="TVt-Zr-er5"/>
+                            <constraint firstItem="POL-vx-VeL" firstAttribute="leading" secondItem="S7d-y2-efR" secondAttribute="leading" constant="16" id="ZvK-Fc-htD"/>
+                            <constraint firstItem="S7d-y2-efR" firstAttribute="trailing" secondItem="POL-vx-VeL" secondAttribute="trailing" constant="26" id="cf2-eh-XSy"/>
+                            <constraint firstItem="uLI-Pd-kQe" firstAttribute="top" secondItem="S7d-y2-efR" secondAttribute="top" constant="32" id="jk2-FJ-54r"/>
+                            <constraint firstItem="Vxn-7r-XsK" firstAttribute="top" secondItem="LvZ-sn-JX2" secondAttribute="bottom" constant="8" id="mvn-hf-mr3"/>
+                            <constraint firstItem="LvZ-sn-JX2" firstAttribute="leading" secondItem="S7d-y2-efR" secondAttribute="leading" constant="16" id="nvj-HS-EaP"/>
+                            <constraint firstItem="Vxn-7r-XsK" firstAttribute="leading" secondItem="S7d-y2-efR" secondAttribute="leading" constant="16" id="t5P-9s-JGm"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="exitButton" destination="HUm-dz-OGP" id="PUe-st-Rcl"/>
+                        <outlet property="idLabel" destination="LvZ-sn-JX2" id="7iB-eZ-Zbf"/>
+                        <outlet property="nameLabel" destination="POL-vx-VeL" id="XaR-7m-grq"/>
+                        <outlet property="statusLabel" destination="Vxn-7r-XsK" id="54H-c0-egQ"/>
+                        <outlet property="userPhoto" destination="uLI-Pd-kQe" id="eYr-ii-Epo"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="sxy-dC-NpF" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1082" y="-2"/>
+        </scene>
     </scenes>
     <resources>
         <image name="0" width="200" height="132"/>
         <image name="Active" width="29.333333969116211" height="26"/>
+        <image name="Exit" width="20" height="22"/>
+        <image name="mockUserPhoto" width="70" height="70"/>
         <namedColor name="YPBlack">
             <color red="0.10196078431372549" green="0.10588235294117647" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="YPGray">
+            <color red="0.68235294117647061" green="0.68627450980392157" blue="0.70588235294117652" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>
