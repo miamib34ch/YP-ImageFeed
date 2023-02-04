@@ -78,7 +78,21 @@ extension ImagesListViewController: UITableViewDataSource{
         else{
             cell.likeCell.setImage(UIImage(named: "NoActive"), for: .normal)
         }
-    
+        
+        if (cell.gradientView.layer.sublayers?.count == nil){ //если нет подслоев то добавляем, иначе каждое переиспользование клетки будет добавляться новый подслой
+            
+            let gradientLayer = CAGradientLayer() //создание градиентного слоя
+            
+            gradientLayer.frame = cell.gradientView.bounds //устанавливаем ему границы - границы градиентного вью
+            
+            gradientLayer.colors = [
+                UIColor(named: "YPBlack")?.withAlphaComponent(0).cgColor as Any, //верхний цвет
+                UIColor(named: "YPBlack")?.withAlphaComponent(0.2).cgColor as Any //нижний цвет
+            ]
+            
+            cell.gradientView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner] //скрываем верхние углы у градиентного вью
+            cell.gradientView.layer.addSublayer(gradientLayer) //добавляем созданный слой в подслои
+        }
     }
     
 }

@@ -37,6 +37,16 @@
                                                         <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
                                                     </userDefinedRuntimeAttributes>
                                                 </imageView>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="K1M-Ku-ZgK" userLabel="gradientView">
+                                                    <rect key="frame" x="20" y="218" width="353" height="28"/>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                                            <integer key="value" value="16"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                                    </userDefinedRuntimeAttributes>
+                                                </view>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="27 августа 2022" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fD6-RS-Aaq" userLabel="dateCell">
                                                     <rect key="frame" x="28.000000000000007" y="222" width="101.66666666666669" height="16"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="13"/>
@@ -56,12 +66,16 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="2xu-Wp-eo5" firstAttribute="top" secondItem="n8X-FG-GsC" secondAttribute="top" id="2Av-Oq-BYd"/>
+                                                <constraint firstItem="K1M-Ku-ZgK" firstAttribute="bottom" secondItem="n8X-FG-GsC" secondAttribute="bottom" id="9QA-Xj-K65"/>
                                                 <constraint firstItem="n8X-FG-GsC" firstAttribute="top" secondItem="t8S-y6-c4t" secondAttribute="top" id="Ku5-Kv-q17"/>
                                                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="fD6-RS-Aaq" secondAttribute="trailing" id="T3z-88-429"/>
                                                 <constraint firstItem="2xu-Wp-eo5" firstAttribute="trailing" secondItem="n8X-FG-GsC" secondAttribute="trailing" id="TXN-nq-71r"/>
                                                 <constraint firstItem="fD6-RS-Aaq" firstAttribute="leading" secondItem="n8X-FG-GsC" secondAttribute="leading" constant="8" id="WOW-bV-7KN"/>
+                                                <constraint firstItem="K1M-Ku-ZgK" firstAttribute="width" secondItem="n8X-FG-GsC" secondAttribute="width" id="gzL-7Y-Osb"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="n8X-FG-GsC" secondAttribute="trailing" id="mAY-ri-rFH"/>
                                                 <constraint firstItem="n8X-FG-GsC" firstAttribute="leading" secondItem="t8S-y6-c4t" secondAttribute="leadingMargin" id="q0p-GX-ApT"/>
+                                                <constraint firstItem="K1M-Ku-ZgK" firstAttribute="top" secondItem="fD6-RS-Aaq" secondAttribute="top" constant="-4" id="q6U-vd-XnA"/>
+                                                <constraint firstItem="K1M-Ku-ZgK" firstAttribute="leading" secondItem="n8X-FG-GsC" secondAttribute="leading" id="r15-2H-VrB"/>
                                                 <constraint firstItem="fD6-RS-Aaq" firstAttribute="bottom" secondItem="n8X-FG-GsC" secondAttribute="bottom" constant="-8" id="rVu-3k-dgY"/>
                                                 <constraint firstItem="n8X-FG-GsC" firstAttribute="bottom" secondItem="t8S-y6-c4t" secondAttribute="bottomMargin" id="wPf-J1-Ujx"/>
                                             </constraints>
@@ -69,6 +83,7 @@
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <connections>
                                             <outlet property="dateCell" destination="fD6-RS-Aaq" id="idV-hG-wTg"/>
+                                            <outlet property="gradientView" destination="K1M-Ku-ZgK" id="U89-KN-tGe"/>
                                             <outlet property="imageCell" destination="n8X-FG-GsC" id="QRO-RP-ZJJ"/>
                                             <outlet property="likeCell" destination="2xu-Wp-eo5" id="sqv-bm-tj8"/>
                                         </connections>

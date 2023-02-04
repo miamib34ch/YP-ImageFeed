@@ -12,4 +12,5 @@ final class ImagesListCell: UITableViewCell {
     @IBOutlet weak var imageCell: UIImageView!
     @IBOutlet weak var likeCell: UIButton!
     @IBOutlet weak var dateCell: UILabel!
+    @IBOutlet weak var gradientView: UIView!
 }
