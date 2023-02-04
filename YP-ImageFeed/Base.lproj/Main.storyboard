@@ -44,17 +44,21 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2xu-Wp-eo5" userLabel="likeCell">
-                                                    <rect key="frame" x="334" y="12" width="29" height="26"/>
+                                                    <rect key="frame" x="331" y="0.0" width="42" height="42"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="42" id="gq9-Er-dfG"/>
+                                                        <constraint firstAttribute="height" constant="42" id="j9t-Xa-Ynq"/>
+                                                    </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                                     <state key="normal" image="Active"/>
                                                 </button>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="2xu-Wp-eo5" firstAttribute="top" secondItem="n8X-FG-GsC" secondAttribute="top" constant="12" id="2Av-Oq-BYd"/>
+                                                <constraint firstItem="2xu-Wp-eo5" firstAttribute="top" secondItem="n8X-FG-GsC" secondAttribute="top" id="2Av-Oq-BYd"/>
                                                 <constraint firstItem="n8X-FG-GsC" firstAttribute="top" secondItem="t8S-y6-c4t" secondAttribute="top" id="Ku5-Kv-q17"/>
                                                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="fD6-RS-Aaq" secondAttribute="trailing" id="T3z-88-429"/>
-                                                <constraint firstItem="2xu-Wp-eo5" firstAttribute="trailing" secondItem="n8X-FG-GsC" secondAttribute="trailing" constant="-10" id="TXN-nq-71r"/>
+                                                <constraint firstItem="2xu-Wp-eo5" firstAttribute="trailing" secondItem="n8X-FG-GsC" secondAttribute="trailing" id="TXN-nq-71r"/>
                                                 <constraint firstItem="fD6-RS-Aaq" firstAttribute="leading" secondItem="n8X-FG-GsC" secondAttribute="leading" constant="8" id="WOW-bV-7KN"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="n8X-FG-GsC" secondAttribute="trailing" id="mAY-ri-rFH"/>
                                                 <constraint firstItem="n8X-FG-GsC" firstAttribute="leading" secondItem="t8S-y6-c4t" secondAttribute="leadingMargin" id="q0p-GX-ApT"/>
@@ -169,7 +173,7 @@
     </scenes>
     <resources>
         <image name="0" width="200" height="132"/>
-        <image name="Active" width="29.333333969116211" height="26"/>
+        <image name="Active" width="42" height="42"/>
         <image name="Exit" width="20" height="22"/>
         <image name="mockUserPhoto" width="70" height="70"/>
         <namedColor name="YPBlack">
