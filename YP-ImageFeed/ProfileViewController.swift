@@ -96,7 +96,7 @@ class ProfileViewController: UIViewController {
     func createButtons()
     {
         let exitButton = UIButton.systemButton(with: UIImage(named: "Exit")!, target: self, action: #selector(tapExitButton))
-        exitButton.tintColor = .red
+        exitButton.tintColor = UIColor(named: "YPRed")
         
         exitButton.translatesAutoresizingMaskIntoConstraints = false
         
