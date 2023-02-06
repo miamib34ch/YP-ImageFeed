@@ -32,11 +32,11 @@ class ProfileViewController: UIViewController {
         profilePic.contentMode = .scaleAspectFit
         
         NSLayoutConstraint.activate([
-        profilePic.heightAnchor.constraint(equalToConstant: 70),
-        profilePic.widthAnchor.constraint(equalToConstant: 70),
-        
-        profilePic.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-        profilePic.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16)
+            profilePic.heightAnchor.constraint(equalToConstant: 70),
+            profilePic.widthAnchor.constraint(equalToConstant: 70),
+            
+            profilePic.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            profilePic.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16)
         ])
         
         userPhoto = profilePic
@@ -103,11 +103,11 @@ class ProfileViewController: UIViewController {
         view.addSubview(exitButton)
         
         NSLayoutConstraint.activate([
-        exitButton.heightAnchor.constraint(equalToConstant: 24),
-        exitButton.widthAnchor.constraint(equalToConstant: 24),
-        
-        exitButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24),
-        exitButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40)
+            exitButton.heightAnchor.constraint(equalToConstant: 24),
+            exitButton.widthAnchor.constraint(equalToConstant: 24),
+            
+            exitButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24),
+            exitButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40)
         ])
     }
     
