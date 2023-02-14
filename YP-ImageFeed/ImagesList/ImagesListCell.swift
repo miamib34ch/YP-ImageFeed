@@ -9,6 +9,8 @@ import UIKit
 
 final class ImagesListCell: UITableViewCell {
     static let reuseIdentifier = "ImagesListCell"
+    weak var gradientSublayer: CALayer?
+    
     @IBOutlet weak var imageCell: UIImageView!
     @IBOutlet weak var likeCell: UIButton!
     @IBOutlet weak var dateCell: UILabel!

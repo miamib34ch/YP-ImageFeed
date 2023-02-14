@@ -93,7 +93,7 @@ extension ImagesListViewController: UITableViewDataSource{
             cell.likeCell.setImage(UIImage(named: "NoActive"), for: .normal)
         }
         
-        if (cell.gradientView.layer.sublayers?.count == nil){ //если нет подслоев то добавляем, иначе каждое переиспользование клетки будет добавляться новый подслой
+        if (cell.gradientSublayer == nil){ //если нет градиентного подслоя то добавляем, иначе каждое переиспользование клетки будет добавляться новый подслой
             
             let gradientLayer = CAGradientLayer() //создание градиентного слоя
             
@@ -108,6 +108,7 @@ extension ImagesListViewController: UITableViewDataSource{
             
             cell.gradientView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner] //скрываем верхние углы у градиентного вью
             cell.gradientView.layer.addSublayer(gradientLayer) //добавляем созданный слой в подслои
+            cell.gradientSublayer = gradientLayer //запоминаем, что подслой есть
         }
     }
     
