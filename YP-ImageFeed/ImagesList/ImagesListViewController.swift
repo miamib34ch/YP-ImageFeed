@@ -12,6 +12,8 @@ class ImagesListViewController: UIViewController {
     @IBOutlet private var tableView: UITableView!
     
     private let photosName: [String] = Array(0..<20).map{ "\($0)" }
+    private let ShowSingleImageSegueIdentifier = "ShowSingleImage"
+    
     private lazy var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .long
@@ -29,6 +31,18 @@ class ImagesListViewController: UIViewController {
 
 extension ImagesListViewController: UITableViewDelegate{
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) { //нажатие на клетку
+        performSegue(withIdentifier: ShowSingleImageSegueIdentifier, sender: indexPath)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == ShowSingleImageSegueIdentifier {
+            let viewController = segue.destination as! SingleImageViewController
+            let indexPath = sender as! IndexPath
+            let image = UIImage(named: photosName[indexPath.row])
+            viewController.image = image
+        } else {
+            super.prepare(for: segue, sender: sender)
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat{
@@ -78,7 +92,24 @@ extension ImagesListViewController: UITableViewDataSource{
         else{
             cell.likeCell.setImage(UIImage(named: "NoActive"), for: .normal)
         }
-    
+        
+        if (cell.gradientSublayer == nil){ //если нет градиентного подслоя то добавляем, иначе каждое переиспользование клетки будет добавляться новый подслой
+            
+            let gradientLayer = CAGradientLayer() //создание градиентного слоя
+            
+            gradientLayer.frame = cell.gradientView.bounds //устанавливаем ему границы - границы градиентного вью
+            //frame используется поскольку слой будет вложен в gradientView и мы будем рисовать по отношению его координат
+            //bounds используется поскольку мы будем рисовать не по отношению координат вью клетки, а по координатам внутри gradientView
+            
+            gradientLayer.colors = [
+                UIColor(named: "YPBlack")?.withAlphaComponent(0).cgColor as Any, //верхний цвет
+                UIColor(named: "YPBlack")?.withAlphaComponent(0.2).cgColor as Any //нижний цвет
+            ]
+            
+            cell.gradientView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner] //скрываем верхние углы у градиентного вью
+            cell.gradientView.layer.addSublayer(gradientLayer) //добавляем созданный слой в подслои
+            cell.gradientSublayer = gradientLayer //запоминаем, что подслой есть
+        }
     }
     
 }
