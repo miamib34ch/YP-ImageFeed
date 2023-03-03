@@ -10,9 +10,7 @@ import Foundation
 class OAuth2Service{
     
     enum NetworkError: Error {
-        case notSuccesResponse(String)
-        case notSuccesDecode(String)
-        case noData(String)
+        case customError(String)
         case errorResponse(Error)
     }
     
@@ -32,13 +30,13 @@ class OAuth2Service{
                 // проверяем, что нам пришёл успешный код ответа
                 if let response = response as? HTTPURLResponse,
                    response.statusCode < 200 || response.statusCode >= 300 {
-                    completion(.failure(NetworkError.notSuccesResponse("Не успешный код от сервера")))
+                    completion(.failure(NetworkError.customError("Не успешный код от сервера")))
                     return
                 }
                 
                 // возвращаем данные
                 guard let data = data else {
-                    completion(.failure(NetworkError.noData("Нет данных")))
+                    completion(.failure(NetworkError.customError("Нет данных")))
                     return
                 }
                 do{
@@ -47,7 +45,7 @@ class OAuth2Service{
                     return
                 }
                 catch{
-                    completion(.failure(NetworkError.notSuccesDecode("Не удалось декодировать")))
+                    completion(.failure(NetworkError.customError("Не удалось декодировать")))
                     return
                 }
             }
