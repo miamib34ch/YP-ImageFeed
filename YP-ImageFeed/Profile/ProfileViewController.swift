@@ -19,7 +19,6 @@ class ProfileViewController: UIViewController {
         createImages()
         createLabels()
         createButtons()
-        
     }
     
     func createImages()
