@@ -14,6 +14,8 @@ class OAuth2Service{
         case errorResponse(Error)
     }
     
+    private init() {}
+    
     static func fetchOAuthToken( code: String,
                                  completion: @escaping(Result<String, Error>) -> Void ) {
         let request = createTokenRequest(code: code)
@@ -55,11 +57,11 @@ class OAuth2Service{
     
     private static func createTokenRequest(code: String) -> URLRequest {
         //создание URL
-        var urlComponents = URLComponents(string:  UnsplashTokenURLString)!
+        var urlComponents = URLComponents(string:  unsplashTokenURLString)!
         urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: AccessKey),
-            URLQueryItem(name: "client_secret", value: SecretKey),
-            URLQueryItem(name: "redirect_uri", value: RedirectURI),
+            URLQueryItem(name: "client_id", value: accessKey),
+            URLQueryItem(name: "client_secret", value: secretKey),
+            URLQueryItem(name: "redirect_uri", value: redirectURI),
             URLQueryItem(name: "code", value: code),
             URLQueryItem(name: "grant_type", value: "authorization_code")
         ]
