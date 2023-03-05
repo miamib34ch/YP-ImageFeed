@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SingleImageViewController: UIViewController{
+final class SingleImageViewController: UIViewController{
     
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var scrollView: UIScrollView!

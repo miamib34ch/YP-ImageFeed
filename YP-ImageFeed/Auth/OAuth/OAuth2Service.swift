@@ -7,7 +7,7 @@
 
 import Foundation
 
-class OAuth2Service{
+final class OAuth2Service{
     
     enum NetworkError: Error {
         case customError(String)

@@ -11,7 +11,7 @@ protocol AuthViewControllerDelegate: AnyObject {
     func authViewController(vc: AuthViewController, didAuthenticateWithCode code: String)
 }
 
-class AuthViewController: UIViewController {
+final class AuthViewController: UIViewController {
     
     private let webViewSegueIdentifier = "ShowWebView"
     weak var delegate: AuthViewControllerDelegate?

@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ProfileViewController: UIViewController {
+final class ProfileViewController: UIViewController {
     private var nameLabel: UILabel?
     private var idLabel: UILabel?
     private var statusLabel: UILabel?
