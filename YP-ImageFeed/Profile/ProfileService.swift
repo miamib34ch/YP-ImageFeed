@@ -1,16 +1,19 @@
 //
-//  OAuth2Service.swift
+//  ProfileService.swift
 //  YP-ImageFeed
 //
-//  Created by Богдан Полыгалов on 02.03.2023.
+//  Created by Богдан Полыгалов on 05.03.2023.
 //
 
 import Foundation
 
-final class OAuth2Service{
+final class ProfileService {
     
-    private static var lastCode: String?
-    private static var task: URLSessionTask?
+    public static var shared = ProfileService()
+    
+    private(set) var profile: Profile?
+    
+    private var task: URLSessionTask?
     
     private enum NetworkError: Error {
         case customError(String)
@@ -19,14 +22,13 @@ final class OAuth2Service{
     
     private init() {}
     
-    static func fetchOAuthToken( code: String,
-                                 completion: @escaping(Result<String, Error>) -> Void ) {
+    func fetchProfile(_ token: String,
+                             completion: @escaping (Result<Profile, Error>) -> Void) {
+    
         assert(Thread.isMainThread)
-        if lastCode == code { return }
         task?.cancel()
-        lastCode = code
         
-        let request = createTokenRequest(code: code)
+        let request = createProfileRequest(token)
         
         let task = URLSession.shared.dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {
@@ -34,7 +36,6 @@ final class OAuth2Service{
                 // проверяем, пришла ли ошибка
                 if let error = error {
                     completion(.failure(NetworkError.errorResponse(error)))
-                    lastCode = nil
                     return
                 }
                 
@@ -42,25 +43,22 @@ final class OAuth2Service{
                 if let response = response as? HTTPURLResponse,
                    response.statusCode < 200 || response.statusCode >= 300 {
                     completion(.failure(NetworkError.customError("Не успешный код от сервера")))
-                    lastCode = nil
                     return
                 }
                 
                 // возвращаем данные
                 guard let data = data else {
                     completion(.failure(NetworkError.customError("Нет данных")))
-                    lastCode = nil
                     return
                 }
                 do{
-                    let response = try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
-                    completion(.success(response.token))
-                    self.task = nil
+                    let response = try JSONDecoder().decode(ProfileResult.self, from: data)
+                    self.profile = Profile(profileResult: response)
+                    completion(.success(self.profile!))
                     return
                 }
                 catch{
                     completion(.failure(NetworkError.customError("Не удалось декодировать")))
-                    lastCode = nil
                     return
                 }
             }
@@ -70,20 +68,11 @@ final class OAuth2Service{
         task.resume()
     }
     
-    private static func createTokenRequest(code: String) -> URLRequest {
-        //создание URL
-        var urlComponents = URLComponents(string:  unsplashTokenURLString)!
-        urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: accessKey),
-            URLQueryItem(name: "client_secret", value: secretKey),
-            URLQueryItem(name: "redirect_uri", value: redirectURI),
-            URLQueryItem(name: "code", value: code),
-            URLQueryItem(name: "grant_type", value: "authorization_code")
-        ]
-        let url = urlComponents.url!
+    private func createProfileRequest(_ token: String) -> URLRequest {
         
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
+        var request = URLRequest(url: URL(string: "/me", relativeTo: defaultBaseURL)!)
+        request.httpMethod = "GET"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
         return request
     }

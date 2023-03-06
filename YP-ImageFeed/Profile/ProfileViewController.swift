@@ -19,6 +19,10 @@ final class ProfileViewController: UIViewController {
         createImages()
         createLabels()
         createButtons()
+        
+        if let profile = ProfileService.shared.profile {
+            updateProfileDetails(profile: profile)
+        }
     }
     
     func createImages()
@@ -109,6 +113,12 @@ final class ProfileViewController: UIViewController {
             exitButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24),
             exitButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40)
         ])
+    }
+    
+    func updateProfileDetails(profile: Profile){
+        self.nameLabel?.text = profile.name
+        self.idLabel?.text = profile.loginName
+        self.statusLabel?.text = profile.bio
     }
     
     @objc func tapExitButton(_ sender: UIButton) {
