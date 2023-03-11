@@ -1,36 +1,25 @@
 //
-//  ProfileService.swift
+//  URLSessionExtension.swift
 //  YP-ImageFeed
 //
-//  Created by Богдан Полыгалов on 05.03.2023.
+//  Created by Богдан Полыгалов on 09.03.2023.
 //
 
 import Foundation
 
-final class ProfileService {
-    
-    public static var shared = ProfileService()
-    
-    private(set) var profile: Profile?
-    
-    private var task: URLSessionTask?
+extension URLSession {
     
     private enum NetworkError: Error {
         case customError(String)
         case errorResponse(Error)
     }
     
-    private init() {}
-    
-    func fetchProfile(_ token: String,
-                             completion: @escaping (Result<Profile, Error>) -> Void) {
-    
-        assert(Thread.isMainThread)
-        task?.cancel()
-        
-        let request = createProfileRequest(token)
-        
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
+    final func objectTask<T: Decodable>(for request: URLRequest,
+                                  saveDataFunc: @escaping (T) -> Void,
+                                  completion: @escaping (Result<T, Error>) -> Void
+    ) -> URLSessionTask {
+                                        
+        let task = dataTask(with: request, completionHandler: { data, response, error in
             DispatchQueue.main.async {
                 
                 // проверяем, пришла ли ошибка
@@ -52,9 +41,9 @@ final class ProfileService {
                     return
                 }
                 do{
-                    let response = try JSONDecoder().decode(ProfileResult.self, from: data)
-                    self.profile = Profile(profileResult: response)
-                    completion(.success(self.profile!))
+                    let response = try JSONDecoder().decode(T.self, from: data)
+                    saveDataFunc(response)
+                    completion(.success(response))
                     return
                 }
                 catch{
@@ -62,18 +51,7 @@ final class ProfileService {
                     return
                 }
             }
-        }
-        
-        self.task = task
-        task.resume()
-    }
-    
-    private func createProfileRequest(_ token: String) -> URLRequest {
-        
-        var request = URLRequest(url: URL(string: "/me", relativeTo: defaultBaseURL)!)
-        request.httpMethod = "GET"
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        
-        return request
+        })
+        return task
     }
 }

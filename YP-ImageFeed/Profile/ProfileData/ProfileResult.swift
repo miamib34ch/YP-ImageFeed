@@ -8,8 +8,8 @@
 import Foundation
 
 struct ProfileResult: Codable{
-    var username: String?
-    var first_name: String?
-    var last_name: String?
-    var bio: String?
+    let username: String?
+    let first_name: String?
+    let last_name: String?
+    let bio: String?
 }

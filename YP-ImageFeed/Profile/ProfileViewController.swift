@@ -14,6 +14,8 @@ final class ProfileViewController: UIViewController {
     private var exitButton: UIButton?
     private var userPhoto: UIImageView?
     
+    private var profileImageServiceObserver: NSObjectProtocol?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         createImages()
@@ -23,6 +25,17 @@ final class ProfileViewController: UIViewController {
         if let profile = ProfileService.shared.profile {
             updateProfileDetails(profile: profile)
         }
+        
+        profileImageServiceObserver = NotificationCenter.default
+            .addObserver(
+                forName: ProfileImageService.DidChangeNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                self.updateAvatar()
+            }
+        updateAvatar()                                              
     }
     
     func createImages()
@@ -119,6 +132,13 @@ final class ProfileViewController: UIViewController {
         self.nameLabel?.text = profile.name
         self.idLabel?.text = profile.loginName
         self.statusLabel?.text = profile.bio
+    }
+    
+    private func updateAvatar() {                                   // 8
+        guard
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else { return }
     }
     
     @objc func tapExitButton(_ sender: UIButton) {

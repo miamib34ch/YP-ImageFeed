@@ -9,62 +9,18 @@ import Foundation
 
 final class OAuth2Service{
     
-    private static var lastCode: String?
     private static var task: URLSessionTask?
-    
-    private enum NetworkError: Error {
-        case customError(String)
-        case errorResponse(Error)
-    }
     
     private init() {}
     
     static func fetchOAuthToken( code: String,
-                                 completion: @escaping(Result<String, Error>) -> Void ) {
+                                 completion: @escaping(Result<OAuthTokenResponseBody, Error>) -> Void ) {
         assert(Thread.isMainThread)
-        if lastCode == code { return }
         task?.cancel()
-        lastCode = code
         
         let request = createTokenRequest(code: code)
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            DispatchQueue.main.async {
-                
-                // проверяем, пришла ли ошибка
-                if let error = error {
-                    completion(.failure(NetworkError.errorResponse(error)))
-                    lastCode = nil
-                    return
-                }
-                
-                // проверяем, что нам пришёл успешный код ответа
-                if let response = response as? HTTPURLResponse,
-                   response.statusCode < 200 || response.statusCode >= 300 {
-                    completion(.failure(NetworkError.customError("Не успешный код от сервера")))
-                    lastCode = nil
-                    return
-                }
-                
-                // возвращаем данные
-                guard let data = data else {
-                    completion(.failure(NetworkError.customError("Нет данных")))
-                    lastCode = nil
-                    return
-                }
-                do{
-                    let response = try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
-                    completion(.success(response.token))
-                    self.task = nil
-                    return
-                }
-                catch{
-                    completion(.failure(NetworkError.customError("Не удалось декодировать")))
-                    lastCode = nil
-                    return
-                }
-            }
-        }
+        let task = URLSession.shared.objectTask(for: request, saveDataFunc: {_ in} ,completion: completion)
         
         self.task = task
         task.resume()
