@@ -19,7 +19,7 @@ final class ProfileImageService{
     
     private init() {}
     
-    func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void){
+    func fetchProfileImageURL(username: String, _ completion: @escaping (Result<UserResult, Error>) -> Void){
         
         assert(Thread.isMainThread)
         task?.cancel()
@@ -33,8 +33,8 @@ final class ProfileImageService{
         
     }
     
-    private func saveFunc(_ avatarURL: String){
-        self.avatarURL = avatarURL
+    private func saveFunc(_ userResult: UserResult){
+        avatarURL = userResult.profile_image.large
     }
     
     private func createProfileImageRequest(_ username: String) -> URLRequest {

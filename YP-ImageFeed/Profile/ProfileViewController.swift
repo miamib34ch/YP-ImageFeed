@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     private var nameLabel: UILabel?
@@ -38,9 +39,9 @@ final class ProfileViewController: UIViewController {
         updateAvatar()                                              
     }
     
-    func createImages()
+    private func createImages()
     {
-        let profilePic = UIImageView(image: UIImage(named: "mockUserPhoto"))
+        let profilePic = UIImageView(image: UIImage(named: "Placeholder"))
         profilePic.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(profilePic)
@@ -58,7 +59,7 @@ final class ProfileViewController: UIViewController {
         userPhoto = profilePic
     }
     
-    func createLabels()
+    private func createLabels()
     {
         guard let userPhoto = userPhoto else {
             return
@@ -109,7 +110,7 @@ final class ProfileViewController: UIViewController {
         self.statusLabel = statusLabel
     }
     
-    func createButtons()
+    private func createButtons()
     {
         guard let image = UIImage(named: "Exit") else {return}
         let exitButton = UIButton.systemButton(with: image, target: self, action: #selector(tapExitButton))
@@ -128,20 +129,25 @@ final class ProfileViewController: UIViewController {
         ])
     }
     
-    func updateProfileDetails(profile: Profile){
+    private func updateProfileDetails(profile: Profile){
         self.nameLabel?.text = profile.name
         self.idLabel?.text = profile.loginName
         self.statusLabel?.text = profile.bio
     }
     
-    private func updateAvatar() {                                   // 8
+    private func updateAvatar() {
         guard
             let profileImageURL = ProfileImageService.shared.avatarURL,
-            let url = URL(string: profileImageURL)
+            let url = URL(string: profileImageURL),
+            let userPhoto = userPhoto
         else { return }
+        
+        let processor = RoundCornerImageProcessor(cornerRadius: 50)
+
+        userPhoto.kf.setImage(with: url,placeholder: UIImage(named: "Placeholder"),options: [.processor(processor)])
     }
     
-    @objc func tapExitButton(_ sender: UIButton) {
+    @objc private func tapExitButton(_ sender: UIButton) {
         
     }
 }
