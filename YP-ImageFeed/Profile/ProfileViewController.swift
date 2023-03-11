@@ -48,6 +48,10 @@ final class ProfileViewController: UIViewController {
         
         profilePic.contentMode = .scaleAspectFit
         
+        //закругление
+        profilePic.layer.cornerRadius = profilePic.frame.size.width / 2
+        profilePic.layer.masksToBounds = true
+        
         NSLayoutConstraint.activate([
             profilePic.heightAnchor.constraint(equalToConstant: 70),
             profilePic.widthAnchor.constraint(equalToConstant: 70),
@@ -141,10 +145,8 @@ final class ProfileViewController: UIViewController {
             let url = URL(string: profileImageURL),
             let userPhoto = userPhoto
         else { return }
-        
-        let processor = RoundCornerImageProcessor(cornerRadius: 50)
 
-        userPhoto.kf.setImage(with: url,placeholder: UIImage(named: "Placeholder"),options: [.processor(processor)])
+        userPhoto.kf.setImage(with: url,placeholder: UIImage(named: "Placeholder"))
     }
     
     @objc private func tapExitButton(_ sender: UIButton) {
