@@ -10,31 +10,21 @@ import ProgressHUD
 
 final class SplashViewController: UIViewController{
     
-    private let ShowAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreenSegueIdentifier"
-    
     override func viewDidAppear(_ animated: Bool){
         super.viewDidAppear(animated)
+        
+        view.backgroundColor = UIColor(named: "YPBlack")
+        createImage()
+        
         if let token = OAuth2TokenStorage().token {
             fetchProfile(vc: nil, token: token)
         } else {
-            performSegue(withIdentifier: ShowAuthenticationScreenSegueIdentifier, sender: nil)
-        }
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Проверим, что переходим на авторизацию
-        if segue.identifier == ShowAuthenticationScreenSegueIdentifier {
-            
-            // Найдём в иерархии AuthViewController
-            guard
-                let navigationController = segue.destination as? UINavigationController,
-                let viewController = navigationController.viewControllers[0] as? AuthViewController
-            else { fatalError("Failed to prepare for \(ShowAuthenticationScreenSegueIdentifier)") }
-            
-            // Установим делегатом контроллера наш SplashViewController
-            viewController.delegate = self
-        } else {
-            super.prepare(for: segue, sender: sender)
+            let auth = UIStoryboard(name: "Main", bundle: .main)
+                .instantiateViewController(withIdentifier: "AuthViewController")
+            guard let auth = auth as? AuthViewController else {return}
+            auth.delegate = self
+            auth.modalPresentationStyle = .fullScreen
+            present(auth, animated: true)
         }
     }
     
@@ -86,6 +76,21 @@ final class SplashViewController: UIViewController{
     
     private func fetchProfileImage(username: String){
         ProfileImageService.shared.fetchProfileImageURL(username: username, {_ in})
+    }
+    
+    private func createImage()
+    {
+        let pic = UIImageView(image: UIImage(named: "Vector"))
+        pic.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubview(pic)
+        
+        pic.contentMode = .scaleAspectFit
+        
+        NSLayoutConstraint.activate([
+            pic.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            pic.centerYAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerYAnchor)
+        ])
     }
 }
 

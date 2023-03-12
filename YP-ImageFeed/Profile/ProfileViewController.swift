@@ -22,6 +22,7 @@ final class ProfileViewController: UIViewController {
         createImages()
         createLabels()
         createButtons()
+        view.backgroundColor = UIColor(named: "YPBlack")
         
         if let profile = ProfileService.shared.profile {
             updateProfileDetails(profile: profile)
