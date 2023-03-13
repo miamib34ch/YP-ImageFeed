@@ -18,8 +18,8 @@ final class ProfileService {
     private init() {}
     
     func fetchProfile(_ token: String,
-                             completion: @escaping (Result<ProfileResult, Error>) -> Void) {
-    
+                      completion: @escaping (Result<ProfileResult, Error>) -> Void) {
+        
         assert(Thread.isMainThread)
         task?.cancel()
         
@@ -31,12 +31,11 @@ final class ProfileService {
         task.resume()
     }
     
-    private func saveFunc(_ profileResult: ProfileResult){
+    private func saveFunc(_ profileResult: ProfileResult) {
         profile = Profile(profileResult: profileResult)
     }
     
     private func createProfileRequest(_ token: String) -> URLRequest {
-        
         var request = URLRequest(url: URL(string: "/me", relativeTo: defaultBaseURL)!)
         request.httpMethod = "GET"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")

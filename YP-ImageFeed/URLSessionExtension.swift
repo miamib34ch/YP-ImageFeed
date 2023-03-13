@@ -15,43 +15,40 @@ extension URLSession {
     }
     
     final func objectTask<T: Decodable>(for request: URLRequest,
-                                  saveDataFunc: @escaping (T) -> Void,
-                                  completion: @escaping (Result<T, Error>) -> Void
-    ) -> URLSessionTask {
-                                        
-        let task = dataTask(with: request, completionHandler: { data, response, error in
+                                        saveDataFunc: @escaping (T) -> Void,
+                                        completion: @escaping (Result<T, Error>) -> Void) -> URLSessionTask {
+        
+        let task = dataTask(with: request) { data, response, error in
             DispatchQueue.main.async {
                 
-                // проверяем, пришла ли ошибка
+                // Проверяем, пришла ли ошибка
                 if let error = error {
                     completion(.failure(NetworkError.errorResponse(error)))
                     return
                 }
                 
-                // проверяем, что нам пришёл успешный код ответа
+                // Проверяем, что нам пришёл успешный код ответа
                 if let response = response as? HTTPURLResponse,
                    response.statusCode < 200 || response.statusCode >= 300 {
                     completion(.failure(NetworkError.customError("Не успешный код от сервера")))
                     return
                 }
                 
-                // возвращаем данные
+                // Возвращаем данные
                 guard let data = data else {
                     completion(.failure(NetworkError.customError("Нет данных")))
                     return
                 }
-                do{
+                do {
                     let response = try JSONDecoder().decode(T.self, from: data)
                     saveDataFunc(response)
                     completion(.success(response))
-                    return
                 }
-                catch{
+                catch {
                     completion(.failure(NetworkError.customError("Не удалось декодировать")))
-                    return
                 }
             }
-        })
+        }
         return task
     }
 }

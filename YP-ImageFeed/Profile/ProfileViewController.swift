@@ -9,9 +9,9 @@ import UIKit
 import Kingfisher
 
 final class ProfileViewController: UIViewController {
-    private var nameLabel: UILabel?
-    private var idLabel: UILabel?
-    private var statusLabel: UILabel?
+    private var nameLabel: UILabel = UILabel()
+    private var idLabel: UILabel = UILabel()
+    private var statusLabel: UILabel = UILabel()
     private var exitButton: UIButton?
     private var userPhoto: UIImageView?
     
@@ -19,6 +19,7 @@ final class ProfileViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         createImages()
         createLabels()
         createButtons()
@@ -29,15 +30,14 @@ final class ProfileViewController: UIViewController {
         }
         
         profileImageServiceObserver = NotificationCenter.default
-            .addObserver(
-                forName: ProfileImageService.DidChangeNotification,
-                object: nil,
-                queue: .main
-            ) { [weak self] _ in
+            .addObserver(forName: ProfileImageService.DidChangeNotification,
+                         object: nil,
+                         queue: .main) {
+                [weak self] _ in
                 guard let self = self else { return }
                 self.updateAvatar()
             }
-        updateAvatar()                                              
+        updateAvatar()
     }
     
     private func createImages()
@@ -115,9 +115,8 @@ final class ProfileViewController: UIViewController {
         self.statusLabel = statusLabel
     }
     
-    private func createButtons()
-    {
-        guard let image = UIImage(named: "Exit") else {return}
+    private func createButtons() {
+        guard let image = UIImage(named: "Exit") else { return }
         let exitButton = UIButton.systemButton(with: image, target: self, action: #selector(tapExitButton))
         exitButton.tintColor = UIColor(named: "YPRed")
         
@@ -134,10 +133,10 @@ final class ProfileViewController: UIViewController {
         ])
     }
     
-    private func updateProfileDetails(profile: Profile){
-        self.nameLabel?.text = profile.name
-        self.idLabel?.text = profile.loginName
-        self.statusLabel?.text = profile.bio
+    private func updateProfileDetails(profile: Profile) {
+        self.nameLabel.text = profile.name
+        self.idLabel.text = profile.loginName
+        self.statusLabel.text = profile.bio
     }
     
     private func updateAvatar() {
@@ -146,7 +145,7 @@ final class ProfileViewController: UIViewController {
             let url = URL(string: profileImageURL),
             let userPhoto = userPhoto
         else { return }
-
+        
         userPhoto.kf.setImage(with: url,placeholder: UIImage(named: "Placeholder"))
     }
     

@@ -8,9 +8,9 @@
 import UIKit
 import ProgressHUD
 
-final class SplashViewController: UIViewController{
+final class SplashViewController: UIViewController {
     
-    override func viewDidAppear(_ animated: Bool){
+    override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         view.backgroundColor = UIColor(named: "YPBlack")
@@ -19,9 +19,8 @@ final class SplashViewController: UIViewController{
         if let token = OAuth2TokenStorage().token {
             fetchProfile(vc: nil, token: token)
         } else {
-            let auth = UIStoryboard(name: "Main", bundle: .main)
-                .instantiateViewController(withIdentifier: "AuthViewController")
-            guard let auth = auth as? AuthViewController else {return}
+            let auth = UIStoryboard(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "AuthViewController")
+            guard let auth = auth as? AuthViewController else { return }
             auth.delegate = self
             auth.modalPresentationStyle = .fullScreen
             present(auth, animated: true)
@@ -33,53 +32,49 @@ final class SplashViewController: UIViewController{
         guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
         
         // Cоздаём экземпляр нужного контроллера из Storyboard с помощью ранее заданного идентификатора.
-        let tabBarController = UIStoryboard(name: "Main", bundle: .main)
-            .instantiateViewController(withIdentifier: "TabBarViewController")
+        let tabBarController = UIStoryboard(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "TabBarViewController")
         
         // Установим в `rootViewController` полученный контроллер
         window.rootViewController = tabBarController
     }
     
-    private func fetchOAuthToken(vc: AuthViewController, code: String){
+    private func fetchOAuthToken(vc: AuthViewController, code: String) {
         UIBlockingProgressHUD.show()
-        OAuth2Service.fetchOAuthToken(code:code){ [weak self] result in
-            guard let self = self else {return}
-            switch result{
+        OAuth2Service.fetchOAuthToken(code: code) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
             case .success(let response):
                 OAuth2TokenStorage().token = response.token
-                self.fetchProfile(vc: vc,token: response.token)
-                break
+                self.fetchProfile(vc: vc, token: response.token)
             case .failure(_):
                 UIBlockingProgressHUD.dismiss()
-                vc.dismiss(animated: true) //убираем webView
+                vc.dismiss(animated: true) // Убираем webView
                 vc.showAler()
-                break
             }
         }
     }
     
-    private func fetchProfile(vc: AuthViewController?, token: String){
-        ProfileService.shared.fetchProfile(token){[weak self] result in
-            guard let self = self else {return}
+    private func fetchProfile(vc: AuthViewController?, token: String) {
+        ProfileService.shared.fetchProfile(token) { [weak self] result in
+            guard let self = self else { return }
             UIBlockingProgressHUD.dismiss()
-            switch result{
-            case .success:
+            switch result {
+            case .success(let profileResult):
                 self.switchToTabBarController()
-                self.fetchProfileImage(username: (ProfileService.shared.profile?.username)!)
+                guard let username = profileResult.username else { return }
+                self.fetchProfileImage(username: username)
             case .failure(_):
-                vc?.dismiss(animated: true) //убираем webView
+                vc?.dismiss(animated: true) // Убираем webView
                 vc?.showAler()
-                break
             }
         }
     }
     
-    private func fetchProfileImage(username: String){
-        ProfileImageService.shared.fetchProfileImageURL(username: username, {_ in})
+    private func fetchProfileImage(username: String) {
+        ProfileImageService.shared.fetchProfileImageURL(username: username, { _ in })
     }
     
-    private func createImage()
-    {
+    private func createImage() {
         let pic = UIImageView(image: UIImage(named: "Vector"))
         pic.translatesAutoresizingMaskIntoConstraints = false
         
@@ -94,7 +89,7 @@ final class SplashViewController: UIViewController{
     }
 }
 
-extension SplashViewController: AuthViewControllerDelegate{
+extension SplashViewController: AuthViewControllerDelegate {
     func authViewController(vc: AuthViewController, didAuthenticateWithCode code: String) {
         fetchOAuthToken(vc: vc, code: code)
     }

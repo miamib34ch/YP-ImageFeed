@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class ProfileImageService{
+final class ProfileImageService {
     
     static let shared = ProfileImageService()
     
@@ -19,7 +19,7 @@ final class ProfileImageService{
     
     private init() {}
     
-    func fetchProfileImageURL(username: String, _ completion: @escaping (Result<UserResult, Error>) -> Void){
+    func fetchProfileImageURL(username: String, _ completion: @escaping (Result<UserResult, Error>) -> Void) {
         
         assert(Thread.isMainThread)
         task?.cancel()
@@ -33,12 +33,12 @@ final class ProfileImageService{
         
     }
     
-    private func saveFunc(_ userResult: UserResult){
+    private func saveFunc(_ userResult: UserResult) {
         avatarURL = userResult.profile_image.large
     }
     
     private func createProfileImageRequest(_ username: String) -> URLRequest {
-        let token = OAuth2TokenStorage().token!
+        let token = OAuth2TokenStorage().token ?? ""
         var request = URLRequest(url: URL(string: "/users/\(username)", relativeTo: defaultBaseURL)!)
         request.httpMethod = "GET"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")

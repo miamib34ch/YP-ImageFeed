@@ -149,6 +149,7 @@
 				8B86341A29868094007113A4 /* SceneDelegate.swift */,
 				8B6AF14629AE7E9700D58BB4 /* Constants.swift */,
 				8B2A6F2029B9FAC9006BF7B9 /* URLSessionExtension.swift */,
+				8B3F6D2329BE10D600A4420F /* TabBarController.swift */,
 				8BCE15D129B4C92B0087544B /* SplashScreen */,
 				8B6AF14A29AF8D2E00D58BB4 /* Auth */,
 				8BAC7B3D298C10F900C9BAC0 /* ImagesList */,
@@ -158,7 +159,6 @@
 				8B86342329868094007113A4 /* LaunchScreen.storyboard */,
 				8B86342129868094007113A4 /* Assets.xcassets */,
 				8B86342629868094007113A4 /* Info.plist */,
-				8B3F6D2329BE10D600A4420F /* TabBarController.swift */,
 			);
 			path = "YP-ImageFeed";
 			sourceTree = "<group>";

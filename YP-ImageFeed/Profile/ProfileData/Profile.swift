@@ -7,17 +7,17 @@
 
 import Foundation
 
-struct Profile{
+struct Profile {
     
     var username: String?
     var name: String?
     var loginName: String?
     var bio: String?
     
-    init(profileResult: ProfileResult){
+    init(profileResult: ProfileResult) {
         username = profileResult.username
-        loginName = "@" + username!
-        name = profileResult.first_name! + " " + profileResult.last_name!
+        loginName = "@" + (username ?? "")
+        name = (profileResult.first_name ?? "") + " " + (profileResult.last_name ?? "")
         bio = profileResult.bio
     }
 }
