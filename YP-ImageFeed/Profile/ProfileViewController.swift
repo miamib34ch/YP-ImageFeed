@@ -9,9 +9,9 @@ import UIKit
 import Kingfisher
 
 final class ProfileViewController: UIViewController {
-    private var nameLabel: UILabel = UILabel()
-    private var idLabel: UILabel = UILabel()
-    private var statusLabel: UILabel = UILabel()
+    private let nameLabel: UILabel = UILabel()
+    private let idLabel: UILabel = UILabel()
+    private let statusLabel: UILabel = UILabel()
     private var exitButton: UIButton?
     private var userPhoto: UIImageView?
     
@@ -70,7 +70,6 @@ final class ProfileViewController: UIViewController {
             return
         }
         
-        let nameLabel = UILabel()
         nameLabel.text = "Екатерина Новикова"
         nameLabel.textColor = .white
         nameLabel.font = UIFont.systemFont(ofSize: 23, weight: .bold)
@@ -82,10 +81,7 @@ final class ProfileViewController: UIViewController {
         nameLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
         nameLabel.topAnchor.constraint(equalTo: userPhoto.bottomAnchor, constant: 8).isActive = true
         
-        self.nameLabel = nameLabel
         
-        
-        let idLabel = UILabel()
         idLabel.text = "@ekaterina_nov"
         idLabel.textColor = UIColor(named: "YPGray")
         idLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
@@ -97,10 +93,7 @@ final class ProfileViewController: UIViewController {
         idLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
         idLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8).isActive = true
         
-        self.idLabel = idLabel
         
-        
-        let statusLabel = UILabel()
         statusLabel.text = "Hello, world!"
         statusLabel.textColor = .white
         statusLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
@@ -111,8 +104,6 @@ final class ProfileViewController: UIViewController {
         
         statusLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
         statusLabel.topAnchor.constraint(equalTo: idLabel.bottomAnchor, constant: 8).isActive = true
-        
-        self.statusLabel = statusLabel
     }
     
     private func createButtons() {
