@@ -7,59 +7,38 @@
 
 import Foundation
 
-class OAuth2Service{
+final class OAuth2Service {
     
-    enum NetworkError: Error {
-        case customError(String)
-        case errorResponse(Error)
-    }
+    private static var task: URLSessionTask?
+    private static var lastCode: String?
     
-    static func fetchOAuthToken( code: String,
-                                 completion: @escaping(Result<String, Error>) -> Void ) {
-        let request = createTokenRequest(code: code)
-        
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            DispatchQueue.main.async {
-                
-                // проверяем, пришла ли ошибка
-                if let error = error {
-                    completion(.failure(NetworkError.errorResponse(error)))
-                    return
-                }
-                
-                // проверяем, что нам пришёл успешный код ответа
-                if let response = response as? HTTPURLResponse,
-                   response.statusCode < 200 || response.statusCode >= 300 {
-                    completion(.failure(NetworkError.customError("Не успешный код от сервера")))
-                    return
-                }
-                
-                // возвращаем данные
-                guard let data = data else {
-                    completion(.failure(NetworkError.customError("Нет данных")))
-                    return
-                }
-                do{
-                    let response = try JSONDecoder().decode(OAuthTokenResponseBody.self, from: data)
-                    completion(.success(response.token))
-                    return
-                }
-                catch{
-                    completion(.failure(NetworkError.customError("Не удалось декодировать")))
-                    return
-                }
-            }
+    private init() {}
+    
+    static func fetchOAuthToken(code: String,
+                                completion: @escaping(Result<OAuthTokenResponseBody, Error>) -> Void) {
+        assert(Thread.isMainThread)
+        if lastCode == code {
+            return
         }
+        task?.cancel()
+        
+        let request = createTokenRequest(code: code)
+        lastCode = code
+        
+        let task = URLSession.shared.objectTask(for: request, saveDataFunc: { _ in lastCode = nil } ,completion: completion)
+        
+        self.task = task
         task.resume()
     }
     
     private static func createTokenRequest(code: String) -> URLRequest {
-        //создание URL
-        var urlComponents = URLComponents(string:  UnsplashTokenURLString)!
+        
+        // Создание URL
+        var urlComponents = URLComponents(string: unsplashTokenURLString)!
         urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: AccessKey),
-            URLQueryItem(name: "client_secret", value: SecretKey),
-            URLQueryItem(name: "redirect_uri", value: RedirectURI),
+            URLQueryItem(name: "client_id", value: accessKey),
+            URLQueryItem(name: "client_secret", value: secretKey),
+            URLQueryItem(name: "redirect_uri", value: redirectURI),
             URLQueryItem(name: "code", value: code),
             URLQueryItem(name: "grant_type", value: "authorization_code")
         ]

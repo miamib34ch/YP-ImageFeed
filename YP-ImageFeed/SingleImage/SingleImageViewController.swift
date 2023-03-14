@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SingleImageViewController: UIViewController{
+final class SingleImageViewController: UIViewController {
     
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var scrollView: UIScrollView!
@@ -46,7 +46,7 @@ class SingleImageViewController: UIViewController{
     
     private func rescaleAndCenterImageInScrollView(image: UIImage) {
         
-        // масштабирование
+        // Масштабирование
         let minZoomScale = scrollView.minimumZoomScale
         let maxZoomScale = scrollView.maximumZoomScale
         view.layoutIfNeeded()
@@ -56,14 +56,14 @@ class SingleImageViewController: UIViewController{
         let vScale = visibleRectSize.height / imageSize.height
         
         let scale = min(maxZoomScale, max(minZoomScale, max(hScale, vScale)))
-        // самый правый max определяет оптимальный скейл, чтобы картинка занимала весь экран
-        // средний max определяет, выходит ли оптимальный скейл за нижнюю границу скейлинга
-        // левый min определяет, выходит ли оптимальный скейл за верхнюю границу скейлинга
+        // Самый правый max определяет оптимальный скейл, чтобы картинка занимала весь экран
+        // Средний max определяет, выходит ли оптимальный скейл за нижнюю границу скейлинга
+        // Левый min определяет, выходит ли оптимальный скейл за верхнюю границу скейлинга
         
         scrollView.setZoomScale(scale, animated: false)
         scrollView.layoutIfNeeded()
         
-        // центрирование
+        // Центрирование
         let newContentSize = scrollView.contentSize
         let x = (newContentSize.width - visibleRectSize.width) / 2
         let y = (newContentSize.height - visibleRectSize.height) / 2
@@ -71,7 +71,7 @@ class SingleImageViewController: UIViewController{
     }
 }
 
-extension SingleImageViewController: UIScrollViewDelegate{
+extension SingleImageViewController: UIScrollViewDelegate {
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         imageView
     }
