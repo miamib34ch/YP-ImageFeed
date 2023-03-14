@@ -37,12 +37,12 @@ final class ImagesListService {
     private func completion(_ res: Result<[PhotoResult],Error>) {
         switch res {
         case .success(let photoResult):
-            
             photoResult.forEach() { res in
                 guard let thumb = res.urls?.thumb,
                       let large = res.urls?.full
                 else { return }
                 
+                // MARK: Переписать эту часть: не нравится обработка даты, обработчик даты ещё есть в контроллере
                 let dateFormatter = DateFormatter()
                 dateFormatter.locale = Locale(identifier: "ru_RU")
                 dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
@@ -65,10 +65,9 @@ final class ImagesListService {
                 lastLoadedPage! += 1
             }
             task = nil
-            NotificationCenter.default.post(
-                name: ImagesListService.DidChangeNotification,
-                object: self)
-            print ("succes")
+            
+            NotificationCenter.default.post(name: ImagesListService.DidChangeNotification,
+                                            object: self)
         case .failure(let error):
             print(error)
         }

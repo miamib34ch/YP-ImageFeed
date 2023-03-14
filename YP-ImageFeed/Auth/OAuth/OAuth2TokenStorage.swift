@@ -21,4 +21,8 @@ final class OAuth2TokenStorage {
             keychain.set(newValue, forKey: "token")
         }
     }
+    
+    func delete() {
+        keychain.removeObject(forKey: "token")
+    }
 }

@@ -7,6 +7,7 @@
 
 import UIKit
 import Kingfisher
+import WebKit
 
 final class ProfileViewController: UIViewController {
     private let nameLabel: UILabel = UILabel()
@@ -141,6 +142,23 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc private func tapExitButton(_ sender: UIButton) {
-        
+        OAuth2TokenStorage().delete()
+        ProfileViewController.clean()
+        let splash = SplashViewController()
+        // Получаем экземпляр `Window` приложения
+        guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
+        window.rootViewController = splash
+    }
+    
+    static func clean() {
+        // Очищаем все куки из хранилища.
+        HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
+        // Запрашиваем все данные из локального хранилища.
+        WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
+            // Массив полученных записей удаляем из хранилища.
+            records.forEach { record in
+                WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
+            }
+        }
     }
 }
