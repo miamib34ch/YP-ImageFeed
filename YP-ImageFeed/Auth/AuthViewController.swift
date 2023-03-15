@@ -7,14 +7,10 @@
 
 import UIKit
 
-protocol AuthViewControllerDelegate: AnyObject {
-    func authViewController(vc: AuthViewController, didAuthenticateWithCode code: String)
-}
-
 final class AuthViewController: UIViewController {
     
     private let webViewSegueIdentifier = "ShowWebView"
-    weak var delegate: AuthViewControllerDelegate?
+    private weak var delegate: AuthViewControllerDelegate?
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == webViewSegueIdentifier {
@@ -26,17 +22,6 @@ final class AuthViewController: UIViewController {
             super.prepare(for: segue, sender: sender)
         }
     }
-    
-    // MARK: создать отдельный презентер для алертов
-    public func showAler() {
-        let alert = UIAlertController(title: "Что-то пошло не так(",
-                                      message: "Не удалось войти в систему",
-                                      preferredStyle: .alert)
-        
-        let action = UIAlertAction(title: "Ок", style: .default, handler: { _ in })
-        alert.addAction(action)
-        self.present(alert, animated: true)
-    }
 }
 
 extension AuthViewController: WebViewViewControllerDelegate {
@@ -46,5 +31,13 @@ extension AuthViewController: WebViewViewControllerDelegate {
     
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
         dismiss(animated: true)
+    }
+}
+
+extension AuthViewController: AlertPresenterDelegate {
+    public func showError() {
+        let alertDelegate = AlertPresenter(delegate: self)
+        let model = AlertModel(title: "Что-то пошло не так(", message: "Не удалось войти в систему", buttonOneText: "Ок", completionOne: {}, buttonTwoText: "", completionTwo: {})
+        alertDelegate.showOneButton(model: model)
     }
 }

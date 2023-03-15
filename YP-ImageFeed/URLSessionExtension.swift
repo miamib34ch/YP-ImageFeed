@@ -9,7 +9,7 @@ import Foundation
 
 extension URLSession {
     
-    private enum NetworkError: Error {
+    enum NetworkError: Error {
         case customError(String)
         case errorResponse(Error)
     }

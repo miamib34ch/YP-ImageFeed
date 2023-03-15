@@ -10,10 +10,12 @@ import Foundation
 final class ImagesListService {
     
     static let shared = ImagesListService()
+    static let DidChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
+    
     private(set) var photos: [Photo] = []
+    private let dateFormatter = ISO8601DateFormatter()
     private var task: URLSessionTask?
     private var lastLoadedPage: Int?
-    static let DidChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     
     private init() {}
     
@@ -42,11 +44,12 @@ final class ImagesListService {
                       let large = res.urls?.full
                 else { return }
                 
-                // MARK: Переписать эту часть: не нравится обработка даты, обработчик даты ещё есть в контроллере
-                let dateFormatter = DateFormatter()
-                dateFormatter.locale = Locale(identifier: "ru_RU")
-                dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-                let date = dateFormatter.date(from: (res.created_at ?? ""))
+                // Заметил, что unspash присылает на каждой новой странице двумя первыми фотографиями - две фотографии с предудыщей страницы
+                if (res.id == photoResult[0].id || res.id == photoResult[1].id) && (lastLoadedPage != nil) {
+                    return
+                }
+                
+                let date = dateFormatter.date(from: res.created_at ?? "")
                 
                 let photo = Photo(id: res.id,
                                   size: CGSize(width: res.width, height: res.height),
@@ -59,13 +62,13 @@ final class ImagesListService {
                 photos.append(photo)
             }
             
-            if lastLoadedPage == nil{
+            if lastLoadedPage == nil {
                 lastLoadedPage = 1
-            } else{
+            } else {
                 lastLoadedPage! += 1
             }
             task = nil
-            
+            print(photos.count)
             NotificationCenter.default.post(name: ImagesListService.DidChangeNotification,
                                             object: self)
         case .failure(let error):
@@ -76,11 +79,86 @@ final class ImagesListService {
     private func createPhotosRequest(_ nextPage: String) -> URLRequest {
         // Создание URL
         var urlComponents = URLComponents(string: URL(string: "/photos", relativeTo: defaultBaseURL)!.absoluteString)!
-        urlComponents.queryItems = [URLQueryItem(name: "page", value: nextPage)]
+        urlComponents.queryItems = [
+            URLQueryItem(name: "page", value: nextPage),
+            URLQueryItem(name: "per_page", value: "10"),
+            URLQueryItem(name: "order_by", value: "popular")
+        ]
         let url = urlComponents.url!
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
+        
+        let token = OAuth2TokenStorage().token ?? ""
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        return request
+    }
+    
+    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
+        
+        var request: URLRequest?
+        
+        if isLike {
+            request = createDislikeRequest(id: photoId)
+        }
+        else {
+            request = createLikeRequest(id: photoId)
+        }
+        
+        let task = URLSession.shared.dataTask(with: request!) { data, response, error in
+            DispatchQueue.main.async {
+                
+                // Проверяем, пришла ли ошибка
+                if let error = error {
+                    completion(.failure(URLSession.NetworkError.errorResponse(error)))
+                    return
+                }
+                
+                // Проверяем, что нам пришёл успешный код ответа
+                if let response = response as? HTTPURLResponse,
+                   response.statusCode < 200 || response.statusCode >= 300 {
+                    completion(.failure(URLSession.NetworkError.customError("Не успешный код от сервера")))
+                    return
+                }
+                
+                // Поиск индекса элемента
+                if let index = self.photos.firstIndex(where: { $0.id == photoId }) {
+                    // Текущий элемент
+                    let photo = self.photos[index]
+                    // Копия элемента с инвертированным значением isLiked.
+                    let newPhoto = Photo(
+                        id: photo.id,
+                        size: photo.size,
+                        createdAt: photo.createdAt,
+                        welcomeDescription: photo.welcomeDescription,
+                        thumbImageURL: photo.thumbImageURL,
+                        largeImageURL: photo.largeImageURL,
+                        isLiked: !photo.isLiked
+                    )
+                    // Заменяем элемент в массиве.
+                    self.photos[index] = newPhoto
+                    
+                    completion(.success(()))
+                }
+            }
+        }
+        task.resume()
+    }
+    
+    private func createLikeRequest(id: String) -> URLRequest {
+        var request = URLRequest(url: URL(string: "/photos/\(id)/like", relativeTo: defaultBaseURL)!)
+        request.httpMethod = "POST"
+        
+        let token = OAuth2TokenStorage().token ?? ""
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        return request
+    }
+    
+    private func createDislikeRequest(id: String) -> URLRequest {
+        var request = URLRequest(url: URL(string: "/photos/\(id)/like", relativeTo: defaultBaseURL)!)
+        request.httpMethod = "DELETE"
         
         let token = OAuth2TokenStorage().token ?? ""
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")

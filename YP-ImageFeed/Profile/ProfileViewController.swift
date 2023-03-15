@@ -142,12 +142,7 @@ final class ProfileViewController: UIViewController {
     }
     
     @objc private func tapExitButton(_ sender: UIButton) {
-        OAuth2TokenStorage().delete()
-        ProfileViewController.clean()
-        let splash = SplashViewController()
-        // Получаем экземпляр `Window` приложения
-        guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
-        window.rootViewController = splash
+        showError()
     }
     
     static func clean() {
@@ -160,5 +155,22 @@ final class ProfileViewController: UIViewController {
                 WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
             }
         }
+    }
+}
+
+extension ProfileViewController: AlertPresenterDelegate {
+    public func showError() {
+        let alertDelegate = AlertPresenter(delegate: self)
+        
+        let model = AlertModel(title: "Пока, пока!", message: "Уверены, что хотите выйти?", buttonOneText: "Да", completionOne: {
+            OAuth2TokenStorage().delete()
+            ProfileViewController.clean()
+            let splash = SplashViewController()
+            // Получаем экземпляр `Window` приложения
+            guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
+            window.rootViewController = splash
+        }, buttonTwoText: "Нет", completionTwo: {})
+        
+        alertDelegate.showTwoButton(model: model)
     }
 }
