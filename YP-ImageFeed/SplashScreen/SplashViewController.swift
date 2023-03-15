@@ -46,10 +46,10 @@ final class SplashViewController: UIViewController {
             case .success(let response):
                 OAuth2TokenStorage().token = response.token
                 self.fetchProfile(vc: vc, token: response.token)
-            case .failure(_):
+            case .failure:
                 UIBlockingProgressHUD.dismiss()
                 vc.dismiss(animated: true) // Убираем webView
-                vc.showAler()
+                vc.showError()
             }
         }
     }
@@ -63,9 +63,9 @@ final class SplashViewController: UIViewController {
                 self.switchToTabBarController()
                 guard let username = profileResult.username else { return }
                 self.fetchProfileImage(username: username)
-            case .failure(_):
+            case .failure:
                 vc?.dismiss(animated: true) // Убираем webView
-                vc?.showAler()
+                vc?.showError()
             }
         }
     }
