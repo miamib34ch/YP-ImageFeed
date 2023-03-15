@@ -81,8 +81,7 @@ final class ImagesListService {
         var urlComponents = URLComponents(string: URL(string: "/photos", relativeTo: defaultBaseURL)!.absoluteString)!
         urlComponents.queryItems = [
             URLQueryItem(name: "page", value: nextPage),
-            URLQueryItem(name: "per_page", value: "10"),
-            URLQueryItem(name: "order_by", value: "popular")
+            URLQueryItem(name: "per_page", value: "10")
         ]
         let url = urlComponents.url!
         

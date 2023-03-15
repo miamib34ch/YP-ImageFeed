@@ -12,7 +12,7 @@ final class WebViewViewController: UIViewController {
     
     @IBOutlet private var webView: WKWebView!
     @IBOutlet private var progressView: UIProgressView!
-    private weak var delegate: WebViewViewControllerDelegate?
+    public weak var delegate: WebViewViewControllerDelegate?
     private var estimatedProgressObservation: NSKeyValueObservation?
     
     override func viewDidLoad() {
