@@ -7,7 +7,4 @@
 
 import Foundation
 
-protocol AlertPresenterProtocol {
-    func showOneButton(model: AlertModel)
-    func showTwoButton(model: AlertModel)
-}
+

@@ -7,6 +7,4 @@
 
 import Foundation
 
-protocol AuthViewControllerDelegate: AnyObject {
-    func authViewController(vc: AuthViewController, didAuthenticateWithCode code: String)
-}
+

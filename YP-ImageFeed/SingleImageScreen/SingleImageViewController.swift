@@ -32,7 +32,7 @@ final class SingleImageViewController: UIViewController {
                 self.rescaleAndCenterImageInScrollView(image: self.imageView.image!)
             case .failure:
                 self.dismiss(animated: true)
-                self.delegate?.showError()
+                self.delegate?.showAlert()
             }
         }
     }

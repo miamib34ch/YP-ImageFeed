@@ -14,7 +14,7 @@ protocol ImagesListCellDelegate: AnyObject {
 
 final class ImagesListCell: UITableViewCell {
     static let reuseIdentifier = "ImagesListCell"
-    weak var gradientSublayer: CALayer?
+    var gradientSublayer: CALayer?
     weak var delegate: ImagesListCellDelegate?
     
     @IBOutlet weak var imageCell: UIImageView!
@@ -30,16 +30,17 @@ final class ImagesListCell: UITableViewCell {
     }
     
     @IBAction private func tapLikeButton(_ sender: Any) {
-        UIBlockingProgressHUD.show()
         delegate?.imageListCellDidTapLike(self)
     }
     
     func setIsLiked() {
         if (likeCell.image(for: .normal) == UIImage(named: "Active")) {
             likeCell.setImage(UIImage(named: "NoActive"), for: .normal)
+            likeCell.accessibilityIdentifier = "NoActive"
         }
         else{
             likeCell.setImage(UIImage(named: "Active"), for: .normal)
+            likeCell.accessibilityIdentifier = "Active"
         }
     }
     

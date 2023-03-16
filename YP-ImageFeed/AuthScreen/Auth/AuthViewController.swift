@@ -7,15 +7,23 @@
 
 import UIKit
 
+protocol AuthViewControllerDelegate: AnyObject {
+    func authViewController(vc: AuthViewController, didAuthenticateWithCode code: String)
+}
+
 final class AuthViewController: UIViewController {
     
     private let webViewSegueIdentifier = "ShowWebView"
-    public weak var delegate: AuthViewControllerDelegate?
+    weak var delegate: AuthViewControllerDelegate?
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == webViewSegueIdentifier {
             guard let webViewViewController = segue.destination as? WebViewViewController
             else { fatalError("Failed to prepare for \(webViewSegueIdentifier)") }
+            
+            let webViewPresenter = WebViewPresenter(authHelper: AuthHelper(configuration: AuthConfiguration.standard))
+            webViewViewController.presenter = webViewPresenter
+            webViewPresenter.view = webViewViewController
             
             webViewViewController.delegate = self
         } else {
@@ -35,9 +43,9 @@ extension AuthViewController: WebViewViewControllerDelegate {
 }
 
 extension AuthViewController: AlertPresenterDelegate {
-    public func showError() {
+    func showAlert() {
         let alertDelegate = AlertPresenter(delegate: self)
-        let model = AlertModel(title: "Что-то пошло не так(", message: "Не удалось войти в систему", buttonOneText: "Ок", completionOne: {}, buttonTwoText: "", completionTwo: {})
-        alertDelegate.showOneButton(model: model)
+        let model = AlertModel(title: "Что-то пошло не так(", message: "Не удалось войти в систему", firstButtonText: "Ок", firstButtonCompletion: nil, secondButtonText: nil, secondButtonCompletion: nil)
+        alertDelegate.showAlertWithOneButton(model: model)
     }
 }

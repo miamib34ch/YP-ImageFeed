@@ -7,29 +7,34 @@
 
 import UIKit
 
-final class ImagesListViewController: UIViewController {
+protocol ImagesListViewControllerProtocol: AnyObject {
+    var presenter: ImagesListViewPresenterProtocol? { get set}
+    var tableView: UITableView! { get set }
+    var photos: [Photo] { get set }
+    func showAlert()
+}
+
+final class ImagesListViewController: UIViewController, ImagesListViewControllerProtocol {
     
-    @IBOutlet private var tableView: UITableView!
+    @IBOutlet var tableView: UITableView!
     
-    private var photos: [Photo] = []
-    private var imageListServiceObserver: NSObjectProtocol?
+    var presenter: ImagesListViewPresenterProtocol?
+    var photos: [Photo] = []
+    
     private let ShowSingleImageSegueIdentifier = "ShowSingleImage"
+    private var imageListServiceObserver: NSObjectProtocol?
     
-    private lazy var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .long
-        formatter.timeStyle = .none
-        return formatter
-    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        presenter = ImagesListViewPresenter()
+        presenter?.view = self
         
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 4, right: 0)
         
         imageListServiceObserver = NotificationCenter.default
             .addObserver(
-                forName: ImagesListService.DidChangeNotification,
+                forName: ImagesListService.didChangeNotification,
                 object: nil,
                 queue: .main
             ) { [weak self] _ in
@@ -62,26 +67,15 @@ extension ImagesListViewController: UITableViewDelegate {
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == ShowSingleImageSegueIdentifier {
-            let viewController = segue.destination as! SingleImageViewController
-            let indexPath = sender as! IndexPath
-            viewController.imageURL = photos[indexPath.row].largeImageURL
-            viewController.delegate = self
+            presenter?.prepare(for: segue, sender: sender)
         } else {
             super.prepare(for: segue, sender: sender)
         }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let contentInsets = UIEdgeInsets(top: 4, left: 16, bottom: 4, right: 16)
-        
-        // Вычисляем масштаб через ширину, поскольку высота ImageView будет ровно во столько же раз больше высоты image, во сколько раз ширина ImageView больше ширины image.
-        let imageViewWidth = tableView.bounds.width - contentInsets.left - contentInsets.right
-        let imageWidth = photos[indexPath.row].size.width
-        let scale = imageViewWidth / imageWidth
-        
-        // Определяем высоту ImageView и складываем её с отступами для получения высоты ячейки
-        let cellHeight = photos[indexPath.row].size.height * scale + contentInsets.top + contentInsets.bottom
-        return cellHeight
+        guard let presenter = presenter else { return 0 }
+        return presenter.tableView(tableView, heightForRowAt: indexPath)
     }
 }
 
@@ -91,9 +85,7 @@ extension ImagesListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if (indexPath.row + 1 == photos.count) {
-            ImagesListService.shared.fetchPhotosNextPage()
-        }
+        presenter?.tableView(tableView, willDisplay: cell, forRowAt: indexPath)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -106,7 +98,7 @@ extension ImagesListViewController: UITableViewDataSource {
         return imageListCell
     }
     
-    func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
+    private func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
         let photo = photos[indexPath.row]
         
         cell.imageCell.backgroundColor = UIColor(named: "YPGray")
@@ -120,32 +112,16 @@ extension ImagesListViewController: UITableViewDataSource {
         }
         
         if let date = photo.createdAt {
-            cell.dateCell.text = dateFormatter.string(from: date)
+            cell.dateCell.text = presenter?.dateFormatter.string(from: date)
         }
         else {
             cell.dateCell.text = ""
         }
         
-        if (photo.isLiked) {
-            cell.likeCell.setImage(UIImage(named: "Active"), for: .normal)
-        }
-        else{
-            cell.likeCell.setImage(UIImage(named: "NoActive"), for: .normal)
-        }
-        
+        photo.isLiked ? cell.likeCell.setImage(UIImage(named: "Active"), for: .normal) : cell.likeCell.setImage(UIImage(named: "NoActive"), for: .normal)
         
         if (cell.gradientSublayer == nil) { // Если нет градиентного подслоя то добавляем, иначе каждое переиспользование клетки будет добавляться новый подслой
-            
-            let gradientLayer = CAGradientLayer() // Создание градиентного слоя
-            
-            gradientLayer.frame = cell.gradientView.bounds // Устанавливаем ему границы - границы градиентного вью
-            // Frame используется поскольку слой будет вложен в gradientView и мы будем рисовать по отношению его координат
-            // Bounds используется поскольку мы будем рисовать не по отношению координат вью клетки, а по координатам внутри gradientView
-            
-            gradientLayer.colors = [
-                UIColor(named: "YPBlack")?.withAlphaComponent(0).cgColor as Any, // Верхний цвет
-                UIColor(named: "YPBlack")?.withAlphaComponent(0.2).cgColor as Any // Нижний цвет
-            ]
+            guard let gradientLayer = presenter?.createGradient(cell: cell) else { return }
             
             cell.gradientView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner] // Скрываем верхние углы у градиентного вью
             cell.gradientView.layer.addSublayer(gradientLayer) // Добавляем созданный слой в подслои
@@ -156,28 +132,14 @@ extension ImagesListViewController: UITableViewDataSource {
 
 extension ImagesListViewController: ImagesListCellDelegate {
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
-        guard let indexPath = tableView.indexPath(for: cell) else { return }
-        let photo = photos[indexPath.row]
-        ImagesListService.shared.changeLike(photoId: photo.id, isLike: photo.isLiked) { [weak self] res in
-            guard let self = self else { return }
-            
-            switch res {
-            case .success:
-                cell.setIsLiked()
-                self.photos = ImagesListService.shared.photos
-                UIBlockingProgressHUD.dismiss()
-            case .failure:
-                UIBlockingProgressHUD.dismiss()
-                self.showError()
-            }
-        }
+        presenter?.imageListCellDidTapLike(cell)
     }
 }
 
 extension ImagesListViewController: AlertPresenterDelegate {
-    public func showError() {
+    func showAlert() {
         let alertDelegate = AlertPresenter(delegate: self)
-        let model = AlertModel(title: "Что-то пошло не так(", message: "Не удалось выполнить операцию", buttonOneText: "Ок", completionOne: {}, buttonTwoText: "", completionTwo: {})
-        alertDelegate.showOneButton(model: model)
+        guard let model = presenter?.createAlertModel() else { return }
+        alertDelegate.showAlertWithOneButton(model: model)
     }
 }

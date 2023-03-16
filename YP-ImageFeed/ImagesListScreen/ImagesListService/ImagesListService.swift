@@ -10,7 +10,7 @@ import Foundation
 final class ImagesListService {
     
     static let shared = ImagesListService()
-    static let DidChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
+    static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     
     private(set) var photos: [Photo] = []
     private let dateFormatter = ISO8601DateFormatter()
@@ -22,6 +22,7 @@ final class ImagesListService {
     func fetchPhotosNextPage() {
         
         assert(Thread.isMainThread)
+        
         if task != nil {
             return
         }
@@ -29,14 +30,14 @@ final class ImagesListService {
         let nextPage = lastLoadedPage == nil ? 1 : lastLoadedPage! + 1
         let request = createPhotosRequest("\(nextPage)")
         
-        let task = URLSession.shared.objectTask(for: request, saveDataFunc: { _ in }, completion: completion)
+        let task = URLSession.shared.objectTask(for: request, saveDataFunc: { _ in }, completion: resultHandler)
         
         self.task = task
         task.resume()
         
     }
     
-    private func completion(_ res: Result<[PhotoResult],Error>) {
+    private func resultHandler(_ res: Result<[PhotoResult],Error>) {
         switch res {
         case .success(let photoResult):
             photoResult.forEach() { res in
@@ -69,7 +70,7 @@ final class ImagesListService {
             }
             task = nil
             print(photos.count)
-            NotificationCenter.default.post(name: ImagesListService.DidChangeNotification,
+            NotificationCenter.default.post(name: ImagesListService.didChangeNotification,
                                             object: self)
         case .failure(let error):
             print(error)
@@ -78,7 +79,7 @@ final class ImagesListService {
     
     private func createPhotosRequest(_ nextPage: String) -> URLRequest {
         // Создание URL
-        var urlComponents = URLComponents(string: URL(string: "/photos", relativeTo: defaultBaseURL)!.absoluteString)!
+        var urlComponents = URLComponents(string: URL(string: "/photos", relativeTo: AuthConfiguration.standard.defaultBaseURL)!.absoluteString)!
         urlComponents.queryItems = [
             URLQueryItem(name: "page", value: nextPage),
             URLQueryItem(name: "per_page", value: "10")
@@ -146,7 +147,7 @@ final class ImagesListService {
     }
     
     private func createLikeRequest(id: String) -> URLRequest {
-        var request = URLRequest(url: URL(string: "/photos/\(id)/like", relativeTo: defaultBaseURL)!)
+        var request = URLRequest(url: URL(string: "/photos/\(id)/like", relativeTo: AuthConfiguration.standard.defaultBaseURL)!)
         request.httpMethod = "POST"
         
         let token = OAuth2TokenStorage().token ?? ""
@@ -156,7 +157,7 @@ final class ImagesListService {
     }
     
     private func createDislikeRequest(id: String) -> URLRequest {
-        var request = URLRequest(url: URL(string: "/photos/\(id)/like", relativeTo: defaultBaseURL)!)
+        var request = URLRequest(url: URL(string: "/photos/\(id)/like", relativeTo: AuthConfiguration.standard.defaultBaseURL)!)
         request.httpMethod = "DELETE"
         
         let token = OAuth2TokenStorage().token ?? ""

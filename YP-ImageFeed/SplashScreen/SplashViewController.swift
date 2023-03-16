@@ -49,7 +49,7 @@ final class SplashViewController: UIViewController {
             case .failure:
                 UIBlockingProgressHUD.dismiss()
                 vc.dismiss(animated: true) // Убираем webView
-                vc.showError()
+                vc.showAlert()
             }
         }
     }
@@ -65,7 +65,7 @@ final class SplashViewController: UIViewController {
                 self.fetchProfileImage(username: username)
             case .failure:
                 vc?.dismiss(animated: true) // Убираем webView
-                vc?.showError()
+                vc?.showAlert()
             }
         }
     }
