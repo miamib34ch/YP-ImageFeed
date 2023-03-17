@@ -14,6 +14,9 @@ protocol ProfileViewControllerProtocol {
 }
 
 final class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
+    
     var presenter: ProfileViewPresenterProtocol?
     
     private var nameLabel: UILabel = UILabel()
@@ -50,7 +53,7 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
     }
     
     private func createImages() {
-        guard let profilePic = presenter?.createImage() else { return }
+        guard let profilePic = presenter?.createImage else { return }
         
         view.addSubview(profilePic)
         
@@ -97,7 +100,7 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
     }
     
     private func createButtons() {
-        guard let exitButton = presenter?.createButton() else { return }
+        guard let exitButton = presenter?.createButton else { return }
         
         view.addSubview(exitButton)
         
@@ -137,7 +140,7 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
 extension ProfileViewController: AlertPresenterDelegate {
     func showAlert() {
         let alertDelegate = AlertPresenter(delegate: self)
-        guard let model = presenter?.createAlertModel() else { return }
+        guard let model = presenter?.createAlertModel else { return }
         alertDelegate.showAlertWithTwoButton(model: model)
     }
 }

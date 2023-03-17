@@ -8,24 +8,20 @@
 import Foundation
 
 protocol AuthHelperProtocol {
-    func authRequest() -> URLRequest
+    var authRequest: URLRequest { get }
     func code(from url: URL) -> String?
 }
 
-class AuthHelper: AuthHelperProtocol {
+final class AuthHelper: AuthHelperProtocol {
     
-    let configuration: AuthConfiguration
+    private let configuration: AuthConfiguration
     
-    init(configuration: AuthConfiguration = .standard) {
-        self.configuration = configuration
-    }
-    
-    func authRequest() -> URLRequest {
-        let url = authURL()
+    var authRequest: URLRequest {
+        let url = authURL
         return URLRequest(url: url)
     }
     
-    func authURL() -> URL {
+    var authURL: URL {
         var urlComponents = URLComponents(string: configuration.authorizeURLString)!
         urlComponents.queryItems = [
             URLQueryItem(name: "client_id", value: configuration.accessKey),
@@ -34,6 +30,10 @@ class AuthHelper: AuthHelperProtocol {
             URLQueryItem(name: "scope", value: configuration.accessScope)
         ]
         return urlComponents.url!
+    }
+    
+    init(configuration: AuthConfiguration = .standard) {
+        self.configuration = configuration
     }
     
     func code(from url: URL) -> String? {

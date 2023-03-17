@@ -9,12 +9,13 @@
 import XCTest
 
 final class ProfileTest: XCTestCase {
+    
     func testPresenterCreateImage() {
         //given
         let presenter = ProfileViewPresenter()
         
         //when
-        let image = presenter.createImage()
+        let image = presenter.createImage
         
         //then
         XCTAssertEqual(image.image, UIImage(named: "Placeholder"))
@@ -36,7 +37,7 @@ final class ProfileTest: XCTestCase {
         let presenter = ProfileViewPresenter()
         
         //when
-        let button = presenter.createButton()
+        let button = presenter.createButton
         
         //then
         XCTAssertEqual(button.currentImage, UIButton().currentImage)
@@ -48,7 +49,7 @@ final class ProfileTest: XCTestCase {
         presenter.view = ProfileViewController()
         
         //when
-        let button = presenter.createButton()
+        let button = presenter.createButton
         
         //then
         XCTAssertEqual(button.currentImage, UIImage(named: "Exit"))
@@ -59,7 +60,7 @@ final class ProfileTest: XCTestCase {
         let presenter = ProfileViewPresenter()
         
         //when
-        let alert = presenter.createAlertModel()
+        let alert = presenter.createAlertModel
         
         //then
         XCTAssertEqual(alert.title, "Пока, пока!")

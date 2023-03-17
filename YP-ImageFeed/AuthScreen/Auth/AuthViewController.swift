@@ -13,6 +13,8 @@ protocol AuthViewControllerDelegate: AnyObject {
 
 final class AuthViewController: UIViewController {
     
+    override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
+    
     private let webViewSegueIdentifier = "ShowWebView"
     weak var delegate: AuthViewControllerDelegate?
     

@@ -16,6 +16,8 @@ protocol ImagesListViewControllerProtocol: AnyObject {
 
 final class ImagesListViewController: UIViewController, ImagesListViewControllerProtocol {
     
+    override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent } 
+    
     @IBOutlet var tableView: UITableView!
     
     var presenter: ImagesListViewPresenterProtocol?
@@ -104,11 +106,9 @@ extension ImagesListViewController: UITableViewDataSource {
         cell.imageCell.backgroundColor = UIColor(named: "YPGray")
         cell.imageCell.contentMode = .scaleAspectFit
         cell.imageCell.kf.indicatorType = .activity
-        cell.imageCell.kf.setImage(with: URL(string: photo.thumbImageURL), placeholder: UIImage(named: "PlaceholderPhotoList")) { /*[weak self]*/ _ in
-            //guard let self = self else { return }
+        cell.imageCell.kf.setImage(with: URL(string: photo.thumbImageURL), placeholder: UIImage(named: "PlaceholderPhotoList")) { _ in
             cell.imageCell.backgroundColor = .clear
             cell.imageCell.contentMode = .scaleAspectFill
-            //self.tableView.reloadRows(at: [indexPath], with: .automatic) // MARK: Из-за этого метода дергается картинка при прокрутке, и зачем его вообще использовать если мы итак выставляем высоту фотографии, а не плейсхолдера
         }
         
         if let date = photo.createdAt {
@@ -139,7 +139,7 @@ extension ImagesListViewController: ImagesListCellDelegate {
 extension ImagesListViewController: AlertPresenterDelegate {
     func showAlert() {
         let alertDelegate = AlertPresenter(delegate: self)
-        guard let model = presenter?.createAlertModel() else { return }
+        guard let model = presenter?.createAlertModel else { return }
         alertDelegate.showAlertWithOneButton(model: model)
     }
 }

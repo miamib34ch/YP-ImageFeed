@@ -10,16 +10,17 @@ import WebKit
 
 protocol ProfileViewPresenterProtocol {
     var view: ProfileViewControllerProtocol? { get set }
-    func createAlertModel() -> AlertModel
-    func createImage() -> UIImageView
+    var createAlertModel: AlertModel { get }
+    var createImage: UIImageView { get }
+    var createButton: UIButton { get }
+    
     func createLabel(text: String, color: UIColor, font: UIFont) -> UILabel
-    func createButton() -> UIButton
 }
 
 final class ProfileViewPresenter: ProfileViewPresenterProtocol {
     var view: ProfileViewControllerProtocol?
     
-    func createImage() -> UIImageView {
+    var createImage: UIImageView {
         let profilePic = UIImageView(image: UIImage(named: "Placeholder"))
         profilePic.translatesAutoresizingMaskIntoConstraints = false
         
@@ -30,6 +31,30 @@ final class ProfileViewPresenter: ProfileViewPresenterProtocol {
         profilePic.layer.masksToBounds = true
         
         return profilePic
+    }
+    
+    var createButton: UIButton {
+        guard let image = UIImage(named: "Exit"),
+              let view = view as? ProfileViewController
+        else { return UIButton() }
+        let exitButton = UIButton.systemButton(with: image, target: view, action: #selector(view.tapExitButton(_:)))
+        exitButton.tintColor = UIColor(named: "YPRed")
+        
+        exitButton.translatesAutoresizingMaskIntoConstraints = false
+        return exitButton
+    }
+    
+    
+    var createAlertModel: AlertModel {
+        return AlertModel(title: "Пока, пока!", message: "Уверены, что хотите выйти?", firstButtonText: "Да", firstButtonCompletion: { [weak self] in
+            guard let self = self else { return }
+            OAuth2TokenStorage().delete()
+            self.clean()
+            let splash = SplashViewController()
+            // Получаем экземпляр `Window` приложения
+            guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
+            window.rootViewController = splash
+        }, secondButtonText: "Нет", secondButtonCompletion: nil)
     }
     
     func createLabel(text: String, color: UIColor, font: UIFont) -> UILabel {
@@ -43,31 +68,7 @@ final class ProfileViewPresenter: ProfileViewPresenterProtocol {
         return nameLabel
     }
     
-    func createButton() -> UIButton {
-        guard let image = UIImage(named: "Exit"),
-              let view = view as? ProfileViewController
-        else { return UIButton() }
-        let exitButton = UIButton.systemButton(with: image, target: view, action: #selector(view.tapExitButton(_:)))
-        exitButton.tintColor = UIColor(named: "YPRed")
-        
-        exitButton.translatesAutoresizingMaskIntoConstraints = false
-        return exitButton
-    }
-    
-    
-    func createAlertModel() -> AlertModel {
-        return AlertModel(title: "Пока, пока!", message: "Уверены, что хотите выйти?", firstButtonText: "Да", firstButtonCompletion: { [weak self] in
-            guard let self = self else { return }
-            OAuth2TokenStorage().delete()
-            self.clean()
-            let splash = SplashViewController()
-            // Получаем экземпляр `Window` приложения
-            guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
-            window.rootViewController = splash
-        }, secondButtonText: "Нет", secondButtonCompletion: nil)
-    }
-    
-    func clean() {
+    private func clean() {
         // Очищаем все куки из хранилища.
         HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
         // Запрашиваем все данные из локального хранилища.

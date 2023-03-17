@@ -9,6 +9,7 @@
 import XCTest
 
 final class WebViewTest: XCTestCase {
+    
     func testViewControllerCallsViewDidLoad() {
         //given
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
@@ -71,7 +72,7 @@ final class WebViewTest: XCTestCase {
         let authHelper = AuthHelper(configuration: configuration)
         
         //when
-        let url = authHelper.authURL()
+        let url = authHelper.authURL
         let urlString = url.absoluteString
         
         //then
@@ -98,6 +99,7 @@ final class WebViewTest: XCTestCase {
 }
 
 final class WebViewPresenterSpy: WebViewPresenterProtocol {
+    
     var viewDidLoadCalled: Bool = false
     var view: WebViewViewControllerProtocol?
     
@@ -115,8 +117,8 @@ final class WebViewPresenterSpy: WebViewPresenterProtocol {
 }
 
 final class WebViewViewControllerSpy: WebViewViewControllerProtocol {
+
     var presenter: WebViewPresenterProtocol?
-    
     var loadRequestCalled: Bool = false
     
     func load(request: URLRequest) {

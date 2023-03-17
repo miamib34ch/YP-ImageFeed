@@ -10,8 +10,8 @@ import UIKit
 protocol ImagesListViewPresenterProtocol {
     var view: ImagesListViewControllerProtocol? { get set }
     var dateFormatter: DateFormatter { get set }
+    var createAlertModel: AlertModel { get }
     
-    func createAlertModel() -> AlertModel
     func imageListCellDidTapLike(_ cell: ImagesListCell)
     func prepare(for segue: UIStoryboardSegue, sender: Any?)
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath)
@@ -30,7 +30,7 @@ final class ImagesListViewPresenter: ImagesListViewPresenterProtocol {
         return formatter
     }()
     
-    func createAlertModel() -> AlertModel {
+    var createAlertModel: AlertModel {
         return AlertModel(title: "Что-то пошло не так(", message: "Не удалось выполнить операцию", firstButtonText: "Ок", firstButtonCompletion: nil, secondButtonText: nil, secondButtonCompletion: nil)
     }
     

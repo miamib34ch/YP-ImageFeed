@@ -16,15 +16,15 @@ protocol WebViewPresenterProtocol {
 
 final class WebViewPresenter: WebViewPresenterProtocol {
     
+    private var authHelper: AuthHelperProtocol
     weak var view: WebViewViewControllerProtocol?
-    var authHelper: AuthHelperProtocol
     
     init(authHelper: AuthHelperProtocol) {
         self.authHelper = authHelper
     }
     
     func viewDidLoad() {
-        let request = authHelper.authRequest()
+        let request = authHelper.authRequest
         view?.load(request: request)
         didUpdateProgressValue(0)
     }

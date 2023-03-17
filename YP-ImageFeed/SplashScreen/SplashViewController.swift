@@ -10,6 +10,8 @@ import ProgressHUD
 
 final class SplashViewController: UIViewController {
     
+    override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         

@@ -11,8 +11,8 @@ protocol ImagesListCellDelegate: AnyObject {
     func imageListCellDidTapLike(_ cell: ImagesListCell)
 }
 
-
 final class ImagesListCell: UITableViewCell {
+    
     static let reuseIdentifier = "ImagesListCell"
     var gradientSublayer: CALayer?
     weak var delegate: ImagesListCellDelegate?
@@ -43,5 +43,4 @@ final class ImagesListCell: UITableViewCell {
             likeCell.accessibilityIdentifier = "Active"
         }
     }
-    
 }

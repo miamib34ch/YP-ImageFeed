@@ -9,6 +9,8 @@ import UIKit
 
 final class SingleImageViewController: UIViewController {
     
+    override var prefersStatusBarHidden: Bool { true }
+    
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var scrollView: UIScrollView!
     
@@ -41,7 +43,7 @@ final class SingleImageViewController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    @IBAction func didTapShareButton(_ sender: Any) {
+    @IBAction private func didTapShareButton(_ sender: Any) {
         let activity = UIActivityViewController(activityItems: [imageView.image as Any],
                                                 applicationActivities: nil)
         present(activity, animated: true, completion: nil)
