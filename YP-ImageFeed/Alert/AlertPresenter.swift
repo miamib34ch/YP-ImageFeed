@@ -7,6 +7,15 @@
 
 import UIKit
 
+protocol AlertPresenterDelegate: AnyObject { //без типа AnyObject weak не работает при создании объекта
+    func showAlert()
+}
+
+protocol AlertPresenterProtocol {
+    func showAlertWithOneButton(model: AlertModel)
+    func showAlertWithTwoButton(model: AlertModel)
+}
+
 struct AlertPresenter: AlertPresenterProtocol {
     
     private weak var delegate: UIViewController?
@@ -15,40 +24,36 @@ struct AlertPresenter: AlertPresenterProtocol {
         self.delegate = delegate
     }
     
-    func showOneButton(model: AlertModel) {
+    func showAlertWithOneButton(model: AlertModel) {
         let alert = UIAlertController(title: model.title,
                                       message: model.message,
                                       preferredStyle: .alert)
         
-        let action = UIAlertAction(title: model.buttonOneText, style: .default) { _ in
-            model.completionOne()
+        let action = UIAlertAction(title: model.firstButtonText, style: .default) { _ in
+            model.firstButtonCompletion?()
         }
         
         alert.addAction(action)
         
-        guard let delegate = delegate else { return }
-        
-        delegate.present(alert, animated: true, completion: nil)
+        delegate?.present(alert, animated: true, completion: nil)
     }
     
-    func showTwoButton(model: AlertModel) {
+    func showAlertWithTwoButton(model: AlertModel) {
         let alert = UIAlertController(title: model.title,
                                       message: model.message,
                                       preferredStyle: .alert)
         
-        let action = UIAlertAction(title: model.buttonOneText, style: .default) { _ in
-            model.completionOne()
+        let firstAction = UIAlertAction(title: model.firstButtonText, style: .default) { _ in
+            model.firstButtonCompletion?()
         }
         
-        let actionTwo = UIAlertAction(title: model.buttonTwoText, style: .default) { _ in
-            model.completionTwo()
+        let secondAction = UIAlertAction(title: model.secondButtonText, style: .default) { _ in
+            model.secondButtonCompletion?()
         }
         
-        alert.addAction(action)
-        alert.addAction(actionTwo)
+        alert.addAction(firstAction)
+        alert.addAction(secondAction)
         
-        guard let delegate = delegate else { return }
-        
-        delegate.present(alert, animated: true, completion: nil)
+        delegate?.present(alert, animated: true, completion: nil)
     }
 }

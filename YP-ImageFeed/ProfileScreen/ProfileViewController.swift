@@ -7,19 +7,29 @@
 
 import UIKit
 import Kingfisher
-import WebKit
 
-final class ProfileViewController: UIViewController {
-    private let nameLabel: UILabel = UILabel()
-    private let idLabel: UILabel = UILabel()
-    private let statusLabel: UILabel = UILabel()
+protocol ProfileViewControllerProtocol {
+    var presenter: ProfileViewPresenterProtocol? { get set }
+    func tapExitButton(_ sender: UIButton)
+}
+
+final class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
+    
+    var presenter: ProfileViewPresenterProtocol?
+    private var profileImageServiceObserver: NSObjectProtocol?
+    
+    private var nameLabel: UILabel = UILabel()
+    private var idLabel: UILabel = UILabel()
+    private var statusLabel: UILabel = UILabel()
     private var exitButton: UIButton?
     private var userPhoto: UIImageView?
     
-    private var profileImageServiceObserver: NSObjectProtocol?
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        presenter = ProfileViewPresenter()
+        presenter?.view = self
         
         createImages()
         createLabels()
@@ -31,7 +41,7 @@ final class ProfileViewController: UIViewController {
         }
         
         profileImageServiceObserver = NotificationCenter.default
-            .addObserver(forName: ProfileImageService.DidChangeNotification,
+            .addObserver(forName: ProfileImageService.didChangeNotification,
                          object: nil,
                          queue: .main) {
                 [weak self] _ in
@@ -41,18 +51,10 @@ final class ProfileViewController: UIViewController {
         updateAvatar()
     }
     
-    private func createImages()
-    {
-        let profilePic = UIImageView(image: UIImage(named: "Placeholder"))
-        profilePic.translatesAutoresizingMaskIntoConstraints = false
+    private func createImages() {
+        guard let profilePic = presenter?.createImage else { return }
         
         view.addSubview(profilePic)
-        
-        profilePic.contentMode = .scaleAspectFit
-        
-        //закругление
-        profilePic.layer.cornerRadius = profilePic.frame.size.width / 2
-        profilePic.layer.masksToBounds = true
         
         NSLayoutConstraint.activate([
             profilePic.heightAnchor.constraint(equalToConstant: 70),
@@ -65,54 +67,39 @@ final class ProfileViewController: UIViewController {
         userPhoto = profilePic
     }
     
-    private func createLabels()
-    {
-        guard let userPhoto = userPhoto else {
-            return
-        }
+    private func createLabels() {
+        guard let userPhoto = userPhoto else { return }
         
-        nameLabel.text = "Екатерина Новикова"
-        nameLabel.textColor = .white
-        nameLabel.font = UIFont.systemFont(ofSize: 23, weight: .bold)
-        
-        nameLabel.translatesAutoresizingMaskIntoConstraints = false
+        guard let nameLabel = presenter?.createLabel(text: "Екатерина Новикова", color: .white, font: UIFont.systemFont(ofSize: 23, weight: .bold)) else { return }
         
         view.addSubview(nameLabel)
         
         nameLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
         nameLabel.topAnchor.constraint(equalTo: userPhoto.bottomAnchor, constant: 8).isActive = true
         
+        self.nameLabel = nameLabel
         
-        idLabel.text = "@ekaterina_nov"
-        idLabel.textColor = UIColor(named: "YPGray")
-        idLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        
-        idLabel.translatesAutoresizingMaskIntoConstraints = false
+        guard let idLabel = presenter?.createLabel(text: "@ekaterina_nov", color: UIColor(named: "YPGray")!, font: UIFont.systemFont(ofSize: 13, weight: .regular)) else { return }
         
         view.addSubview(idLabel)
         
         idLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
         idLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 8).isActive = true
         
+        self.idLabel = idLabel
         
-        statusLabel.text = "Hello, world!"
-        statusLabel.textColor = .white
-        statusLabel.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        
-        statusLabel.translatesAutoresizingMaskIntoConstraints = false
+        guard let statusLabel = presenter?.createLabel(text: "Hello, world!", color: .white, font: UIFont.systemFont(ofSize: 13, weight: .regular)) else { return }
         
         view.addSubview(statusLabel)
         
         statusLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
         statusLabel.topAnchor.constraint(equalTo: idLabel.bottomAnchor, constant: 8).isActive = true
+        
+        self.statusLabel = statusLabel
     }
     
     private func createButtons() {
-        guard let image = UIImage(named: "Exit") else { return }
-        let exitButton = UIButton.systemButton(with: image, target: self, action: #selector(tapExitButton))
-        exitButton.tintColor = UIColor(named: "YPRed")
-        
-        exitButton.translatesAutoresizingMaskIntoConstraints = false
+        guard let exitButton = presenter?.createButton else { return }
         
         view.addSubview(exitButton)
         
@@ -123,6 +110,8 @@ final class ProfileViewController: UIViewController {
             exitButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24),
             exitButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40)
         ])
+        
+        exitButton.accessibilityIdentifier = "logout button"
     }
     
     private func updateProfileDetails(profile: Profile) {
@@ -141,36 +130,16 @@ final class ProfileViewController: UIViewController {
         userPhoto.kf.setImage(with: url,placeholder: UIImage(named: "Placeholder"))
     }
     
-    @objc private func tapExitButton(_ sender: UIButton) {
-        showError()
+    @objc func tapExitButton(_ sender: UIButton) {
+        showAlert()
     }
     
-    static func clean() {
-        // Очищаем все куки из хранилища.
-        HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
-        // Запрашиваем все данные из локального хранилища.
-        WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
-            // Массив полученных записей удаляем из хранилища.
-            records.forEach { record in
-                WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
-            }
-        }
-    }
 }
 
 extension ProfileViewController: AlertPresenterDelegate {
-    public func showError() {
+    func showAlert() {
         let alertDelegate = AlertPresenter(delegate: self)
-        
-        let model = AlertModel(title: "Пока, пока!", message: "Уверены, что хотите выйти?", buttonOneText: "Да", completionOne: {
-            OAuth2TokenStorage().delete()
-            ProfileViewController.clean()
-            let splash = SplashViewController()
-            // Получаем экземпляр `Window` приложения
-            guard let window = UIApplication.shared.windows.first else { fatalError("Invalid Configuration") }
-            window.rootViewController = splash
-        }, buttonTwoText: "Нет", completionTwo: {})
-        
-        alertDelegate.showTwoButton(model: model)
+        guard let model = presenter?.createAlertModel else { return }
+        alertDelegate.showAlertWithTwoButton(model: model)
     }
 }

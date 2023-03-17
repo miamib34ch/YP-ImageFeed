@@ -10,11 +10,9 @@ import Foundation
 final class ProfileImageService {
     
     static let shared = ProfileImageService()
-    
-    static let DidChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
+    static let didChangeNotification = Notification.Name(rawValue: "ProfileImageProviderDidChange")
     
     private(set) var avatarURL: String?
-    
     private var task: URLSessionTask?
     
     private init() {}
@@ -39,7 +37,7 @@ final class ProfileImageService {
     
     private func createProfileImageRequest(_ username: String) -> URLRequest {
         let token = OAuth2TokenStorage().token ?? ""
-        var request = URLRequest(url: URL(string: "/users/\(username)", relativeTo: defaultBaseURL)!)
+        var request = URLRequest(url: URL(string: "/users/\(username)", relativeTo: AuthConfiguration.standard.defaultBaseURL)!)
         request.httpMethod = "GET"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         

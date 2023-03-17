@@ -9,10 +9,9 @@ import Foundation
 
 final class ProfileService {
     
-    public static var shared = ProfileService()
-    
+    static var shared = ProfileService()
+
     private(set) var profile: Profile?
-    
     private var task: URLSessionTask?
     
     private init() {}
@@ -36,7 +35,7 @@ final class ProfileService {
     }
     
     private func createProfileRequest(_ token: String) -> URLRequest {
-        var request = URLRequest(url: URL(string: "/me", relativeTo: defaultBaseURL)!)
+        var request = URLRequest(url: URL(string: "/me", relativeTo: AuthConfiguration.standard.defaultBaseURL)!)
         request.httpMethod = "GET"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         

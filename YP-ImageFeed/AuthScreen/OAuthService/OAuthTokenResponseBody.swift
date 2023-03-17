@@ -18,7 +18,6 @@
 import Foundation
 
 struct OAuthTokenResponseBody: Decodable {
-    
     let token: String
     let type: String
     let scope: String

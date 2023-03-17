@@ -10,6 +10,8 @@ import ProgressHUD
 
 final class SplashViewController: UIViewController {
     
+    override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -49,7 +51,7 @@ final class SplashViewController: UIViewController {
             case .failure:
                 UIBlockingProgressHUD.dismiss()
                 vc.dismiss(animated: true) // Убираем webView
-                vc.showError()
+                vc.showAlert()
             }
         }
     }
@@ -65,7 +67,7 @@ final class SplashViewController: UIViewController {
                 self.fetchProfileImage(username: username)
             case .failure:
                 vc?.dismiss(animated: true) // Убираем webView
-                vc?.showError()
+                vc?.showAlert()
             }
         }
     }
