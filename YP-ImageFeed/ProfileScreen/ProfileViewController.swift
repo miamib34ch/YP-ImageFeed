@@ -18,14 +18,13 @@ final class ProfileViewController: UIViewController, ProfileViewControllerProtoc
     override var preferredStatusBarStyle: UIStatusBarStyle { .lightContent }
     
     var presenter: ProfileViewPresenterProtocol?
+    private var profileImageServiceObserver: NSObjectProtocol?
     
     private var nameLabel: UILabel = UILabel()
     private var idLabel: UILabel = UILabel()
     private var statusLabel: UILabel = UILabel()
     private var exitButton: UIButton?
     private var userPhoto: UIImageView?
-    
-    private var profileImageServiceObserver: NSObjectProtocol?
     
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -15,7 +15,6 @@ final class SingleImageViewController: UIViewController {
     @IBOutlet private weak var scrollView: UIScrollView!
     
     var delegate: AlertPresenterDelegate?
-    
     var imageURL: String?
     
     override func viewDidLoad() {

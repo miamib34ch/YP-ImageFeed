@@ -10,9 +10,8 @@ import Foundation
 final class ProfileService {
     
     static var shared = ProfileService()
-    
+
     private(set) var profile: Profile?
-    
     private var task: URLSessionTask?
     
     private init() {}
