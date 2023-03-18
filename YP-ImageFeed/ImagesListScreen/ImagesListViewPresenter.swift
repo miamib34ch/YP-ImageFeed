@@ -31,7 +31,12 @@ final class ImagesListViewPresenter: ImagesListViewPresenterProtocol {
     }()
     
     var createAlertModel: AlertModel {
-        return AlertModel(title: "Что-то пошло не так(", message: "Не удалось выполнить операцию", firstButtonText: "Ок", firstButtonCompletion: nil, secondButtonText: nil, secondButtonCompletion: nil)
+        return AlertModel(title: "Что-то пошло не так(",
+                          message: "Не удалось выполнить операцию",
+                          firstButtonText: "Ок",
+                          firstButtonCompletion: nil,
+                          secondButtonText: nil,
+                          secondButtonCompletion: nil)
     }
     
     func imageListCellDidTapLike(_ cell: ImagesListCell) {
@@ -90,11 +95,10 @@ final class ImagesListViewPresenter: ImagesListViewPresenterProtocol {
     }
     
     func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        guard let view = view else { return }
         guard let view = view as? ImagesListViewController else { return }
+        guard let viewController = segue.destination as? SingleImageViewController else { return }
+        guard let indexPath = sender as? IndexPath else { return }
         
-        let viewController = segue.destination as! SingleImageViewController
-        let indexPath = sender as! IndexPath
         viewController.imageURL = view.photos[indexPath.row].largeImageURL
         viewController.delegate = view
     }

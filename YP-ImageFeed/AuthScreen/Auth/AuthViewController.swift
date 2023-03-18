@@ -47,7 +47,12 @@ extension AuthViewController: WebViewViewControllerDelegate {
 extension AuthViewController: AlertPresenterDelegate {
     func showAlert() {
         let alertDelegate = AlertPresenter(delegate: self)
-        let model = AlertModel(title: "Что-то пошло не так(", message: "Не удалось войти в систему", firstButtonText: "Ок", firstButtonCompletion: nil, secondButtonText: nil, secondButtonCompletion: nil)
+        let model = AlertModel(title: "Что-то пошло не так(",
+                               message: "Не удалось войти в систему",
+                               firstButtonText: "Ок",
+                               firstButtonCompletion: nil,
+                               secondButtonText: nil,
+                               secondButtonCompletion: nil)
         alertDelegate.showAlertWithOneButton(model: model)
     }
 }

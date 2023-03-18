@@ -23,7 +23,7 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
     var presenter: ImagesListViewPresenterProtocol?
     var photos: [Photo] = []
     
-    private let ShowSingleImageSegueIdentifier = "ShowSingleImage"
+    private let showSingleImageSegueIdentifier = "ShowSingleImage"
     private var imageListServiceObserver: NSObjectProtocol?
     
     
@@ -64,11 +64,11 @@ final class ImagesListViewController: UIViewController, ImagesListViewController
 
 extension ImagesListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) { // Нажатие на клетку
-        performSegue(withIdentifier: ShowSingleImageSegueIdentifier, sender: indexPath)
+        performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == ShowSingleImageSegueIdentifier {
+        if segue.identifier == showSingleImageSegueIdentifier {
             presenter?.prepare(for: segue, sender: sender)
         } else {
             super.prepare(for: segue, sender: sender)

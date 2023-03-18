@@ -8,10 +8,10 @@
 import Foundation
 
 struct UserResult: Codable {
-    let profile_image: ProfileImage //ответ сервера возвращает не массив, а объект
+    let profile_image: ProfileImage // Ответ сервера возвращает не массив, а объект
 }
 
-struct ProfileImage: Codable { //поля объекта
+struct ProfileImage: Codable { // Поля объекта
     let small: String
     let medium: String
     let large: String

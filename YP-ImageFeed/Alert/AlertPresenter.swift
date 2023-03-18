@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol AlertPresenterDelegate: AnyObject { //без типа AnyObject weak не работает при создании объекта
+protocol AlertPresenterDelegate: AnyObject { // Без типа AnyObject weak не работает при создании объекта
     func showAlert()
 }
 
