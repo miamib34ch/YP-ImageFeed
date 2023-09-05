@@ -130,3 +130,18 @@
 6. Используются внешние зависимости через SPM: Kingfisher, ProgressHUD, SwiftKeychainWrapper.
 
 ## **Инструкция по запуску**
+Для запуска потребуется [Xcode](https://developer.apple.com/xcode/)
+1. Скачайте архив *ветки* или *релиз* из github:  
+   1.1 Скачивание *ветки*:  
+   <img width="1438" alt="image" src="https://github.com/miamib34ch/YP-ImageFeed/assets/77894393/809118be-47a9-4b4c-9095-431145835244">  
+   1.2 Скачивание *релиза*:  
+   <img width="1438" alt="image" src="https://github.com/miamib34ch/YP-ImageFeed/assets/77894393/886f8f65-b0c8-47b8-8bb4-12a91662200d">  
+   <img width="1438" alt="image" src="https://github.com/miamib34ch/YP-ImageFeed/assets/77894393/fd418b4b-948f-4b82-8d64-6f5a8c75a060">  
+2. Распакуйте архив и запустите проект:  
+   2.1 Зайдите в распакованную папку:  
+   <img width="699" alt="image" src="https://github.com/miamib34ch/YP-ImageFeed/assets/77894393/28881726-b6bc-43ed-90b9-f6f6ba9a7449">  
+   2.2 Откройте файл *YP-ImageFeed.xcodeproj*:  
+   <img width="699" alt="image" src="https://github.com/miamib34ch/YP-ImageFeed/assets/77894393/46f2c22f-11fd-44a7-b8be-812c06278335">  
+   2.3 Появится окно, в котором нужно нажать *Trust and Open*:  
+   <img width="245" alt="image" src="https://github.com/miamib34ch/YP-ImageFeed/assets/77894393/9e008119-b5ef-4e4d-a08f-f71e182a27fb">  
+3. В Xcode запустите приложение на симуляторе или на реальном устройстве.
