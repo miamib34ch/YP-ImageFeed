@@ -4,7 +4,7 @@
 
 - [Дизайн в Figma](https://tinyurl.com/image-feed-figma)
 - [Unsplash API](https://unsplash.com/documentation)
-- [Скринкаст готового приложения]()
+- [Скринкаст готового приложения](https://youtu.be/sNQeMw9iNlk)
 
 ## **Назначение и цели приложения**
 
